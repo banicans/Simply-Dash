@@ -1,0 +1,468 @@
+:root{
+  --color-base: #191724;
+  --color-surface: #1f1d2e;
+  --color-overlay: #26233a;
+  --color-muted: #6e6a86;
+  --color-subtle: #908caa;
+  --color-text: #e0def4;
+  --color-love: #eb6f92;
+  --color-gold: #f6c177;
+  --font-primary: "Plaster", system-ui;
+  --font-secondary: 'Google Sans', sans-serif;
+}
+
+body {
+  background: var(--color-base);
+  color: var(--color-text);
+  max-height: 1920px;
+}
+
+
+.container {
+  margin: 0.5rem;
+  max-width: 1080px;
+}
+
+.section{
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.card{
+  padding: 20px;
+  background-color: var(--color-surface);
+  border-radius: 20px;
+}
+
+button{
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-secondary);
+  cursor: pointer;
+}
+button:hover{
+  background-color: var(--color-love);
+}
+
+a{
+  color: var(--color-love);
+  text-decoration: none;
+}
+a:hover{
+  text-decoration: underline;
+}
+
+
+
+
+
+
+
+#time-weather-section {
+  gap: 20px;
+}
+
+/* -------------------- Time and date Styles -------------------- */
+#time-date-card{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-base);
+}
+#time{
+  font-size: 8rem;
+  font-family: var(--font-primary);
+  color: var(--color-love);
+  text-shadow: 10px 10px var(--color-overlay);
+}
+
+#date{
+  font-size: 5rem;
+  color: var(--color-muted);
+  font-family: var(--font-secondary);
+}
+
+
+
+
+
+
+/* -------------------- Weather Current Styles -------------------- */
+#weather-card{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#weather-current {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--color-overlay);
+}
+
+#weather-current-text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.weather-temp{
+  font-size: 5rem;
+  font-family: var(--font-primary);
+  color: var(--color-love);
+}
+
+.weather-desc{
+  font-size: 3rem;
+  color: var(--color-text);
+  font-family: var(--font-secondary);
+  overflow: visible;
+}
+
+
+.weather-current-icon svg{
+  color: var(--color-gold);
+}
+
+
+/* -------------------- Weather Forcast Styles -------------------- */
+#weather-forecast{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.forecast-day{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.forecast-date{
+  color: var(--color-subtle);
+  font-family: var(--font-secondary);
+  font-size: 2.5rem;
+  text-align: center;
+}
+
+.forecast-icon{
+  font-size: 5rem;
+  text-align: center;
+  color: var(--color-gold);
+}
+
+.forecast-temp{
+  color: var(--color-muted);
+  font-family: var(--font-primary);
+  font-size: 2.5rem;
+  text-align: center;
+}
+
+.forecast-line{
+  width: 20px;
+  background-color: var(--color-love);
+  margin: 0 20px;
+}
+
+
+/* -------------------- Calendar Styles -------------------- */
+#calendar-card{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.calendar-day{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.calendar-day-details{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.calendar-dayofmonth{
+  font-size: 4rem;
+  font-family: var(--font-primary);
+  color: var(--color-love);
+}
+.calendar-dayofweek{
+  font-size: 2rem;
+  color: var(--color-muted);
+  font-family: var(--font-secondary);
+}
+
+.calendar-events{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.calendar-event-item{
+  background-color: var(--color-overlay);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.calendar-event-item-time{
+  font-size: 1.5rem;
+  color: var(--color-subtle);
+  font-family: var(--font-secondary);
+}
+
+.calendar-event-item-title{
+  font-size: 2rem;
+  color: var(--color-text);
+  font-family: var(--font-secondary);
+}
+
+.calendar-event-item-location{
+  font-size: 1.5rem;
+  color: var(--color-muted);
+  font-family: var(--font-secondary);
+}
+
+
+
+
+
+
+.moodle-overlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  /* The Blur Effect */
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px); /* Safari support */
+  visibility: hidden;
+
+}
+
+.modal-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.moodle-settings
+{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 500px;
+  background-color: var(--color-surface);
+  padding: 20px;
+  border-radius: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  visibility: hidden;
+  z-index: 1000;
+ 
+}
+
+.moodle-settings-visible{
+  visibility: visible;
+}
+
+
+
+
+.moodle-header{
+  color: var(--color-love);
+  font-family: var(--font-primary);
+  font-size: 1.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.moodle-close-button{
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.moodle-close-button:hover{
+  color: var(--color-love);
+  background-color: var(--color-overlay);
+}
+
+
+
+.moodle-content{
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  background-color: var(--color-overlay);
+  border-radius: 20px;
+  padding: 20px;
+  max-height: 60vh;
+  overflow-y: auto; 
+  scrollbar-width: auto;
+  scrollbar-color: var(--color-muted) var(--color-overlay);
+}
+
+.moodle-content::-webkit-scrollbar {
+  width: 8px;
+}
+.moodle-content::-webkit-scrollbar-track {
+  background: var(--color-gold);
+}
+.moodle-content::-webkit-scrollbar-thumb {
+  background: var(--color-muted);
+  border-radius: 4px;
+}
+
+.setting-group-divider{
+  height: 2px;
+  background-color: var(--color-muted);
+  color: var(--color-surface);
+}
+
+.moodle-group-header{
+  color: var(--color-love);
+  font-family: var(--font-secondary);
+  font-size: 1.5rem;
+}
+
+.moodle-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--color-muted);
+}
+
+.moodle-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.moodle-item label{
+  color: var(--color-muted);
+  font-family: var(--font-secondary);
+  font-size: 1.2rem;
+}
+
+.moodle-item input{
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+  font-family: var(--font-secondary);
+}
+
+.moodle-item input:focus{
+  background-color: var(--color-overlay);
+  color: var(--color-gold);
+  border: 2px solid var(--color-gold);
+}
+
+.moodle-item select {
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+  font-family: var(--font-secondary);
+}
+
+
+
+
+
+.moodle-footer{
+  display: flex;
+  gap: 10px;
+  color: var(--color-muted);
+  font-family: var(--font-secondary);
+  font-size: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.moodle-footer-group {
+  display: flex;
+  gap: 10px;
+}
+
+#save-settings{
+  background-color: var(--color-subtle);
+}
+#save-settings:hover{
+  background-color: var(--color-love);
+  color: var(--color-text);
+}
+
+
+
+
+.moodle-show-info {
+  color: var(--color-muted);
+  font-family: var(--font-secondary);
+  font-size: 1rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.moodle-show-info:hover {
+  color: var(--color-love);
+}
+
+.moodle-hidden-info {
+  display: none;
+}
+.moodle-hidden-info p {
+  color: var(--color-subtle);
+  font-family: var(--font-secondary);
+  font-size: 1rem;
+}
+
+
+
+
+
+#open-settings{
+  background-color: var(--color-base);
+  border: none;
+  outline: none;
+  padding: 0%;
+}
+
+#open-settings svg{
+  color: var(--color-base);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+#open-settings svg:hover{
+  color: var(--color-love);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
