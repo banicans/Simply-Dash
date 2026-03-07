@@ -4,7 +4,11 @@ const STORAGE_KEYS = {
   GOOGLE_CLIENT_ID: 'dashboard_google_client_id',
   GOOGLE_CLIENT_SECRET: 'dashboard_google_client_secret',
   GOOGLE_ACCESS_TOKEN: 'dashboard_google_access_token',
-  GOOGLE_REFRESH_TOKEN: 'dashboard_google_refresh_token'
+  GOOGLE_REFRESH_TOKEN: 'dashboard_google_refresh_token',
+  GENERAL_UNITS: 'dashboard_general_units',
+  GENERAL_TIME_FORMAT: 'dashboard_general_time_format',
+  GENERAL_DATE_FORMAT: 'dashboard_general_date_format',
+  GENERAL_SETTINGS_BUTTON_HIDE: 'dashboard_general_settings_button_hide'
 };
 
 const WEATHER_ICONS = {
@@ -54,7 +58,8 @@ function getSettings() {
     generalUnits: localStorage.getItem(STORAGE_KEYS.GENERAL_UNITS) || 'metric',
     generalTimeFormat: localStorage.getItem(STORAGE_KEYS.GENERAL_TIME_FORMAT) || '24h',
     generalDateFormat: localStorage.getItem(STORAGE_KEYS.GENERAL_DATE_FORMAT) || 'dd, Do MMM',
-    generalSettingsButtonHide: localStorage.getItem(STORAGE_KEYS.GENERAL_SETTINGS_BUTTON_HIDE) === 'false',
+    generalSettingsButtonHide: localStorage.getItem(STORAGE_KEYS.GENERAL_SETTINGS_BUTTON_HIDE) === 'true',
+
     location: localStorage.getItem(STORAGE_KEYS.LOCATION) || 'Worcester',
     weatherApi: localStorage.getItem(STORAGE_KEYS.WEATHER_API) || '',
     googleClientId: localStorage.getItem(STORAGE_KEYS.GOOGLE_CLIENT_ID) || '',
@@ -62,11 +67,24 @@ function getSettings() {
   };
 }
 
+function updateOpenSettingsColor() {
+  const settings = getSettings();
+  const openSettingsSvg = document.querySelector('#open-settings svg');
+  if (openSettingsSvg) {
+    if (settings.generalSettingsButtonHide) {
+      openSettingsSvg.style.color = 'var(--color-base)';
+    } else {
+      openSettingsSvg.style.color = 'var(--color-muted)';
+    }
+  }
+}
+
 function saveSettings() {
   localStorage.setItem(STORAGE_KEYS.GENERAL_UNITS, document.getElementById('general-units').value);
   localStorage.setItem(STORAGE_KEYS.GENERAL_TIME_FORMAT, document.getElementById('general-time-format').value);
   localStorage.setItem(STORAGE_KEYS.GENERAL_DATE_FORMAT, document.getElementById('general-date-format').value);
   localStorage.setItem(STORAGE_KEYS.GENERAL_SETTINGS_BUTTON_HIDE, document.getElementById('general-settings-button-hide').checked);
+
   localStorage.setItem(STORAGE_KEYS.LOCATION, document.getElementById('location-input').value);
   localStorage.setItem(STORAGE_KEYS.WEATHER_API, document.getElementById('weather-api-input').value);
   localStorage.setItem(STORAGE_KEYS.GOOGLE_CLIENT_ID, document.getElementById('google-client-id').value);
@@ -74,6 +92,7 @@ function saveSettings() {
   
   closeSettings();
   fetchWeather();
+  updateOpenSettingsColor();
 }
 
 function loadSettings() {
@@ -385,6 +404,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  updateOpenSettingsColor();
 
   updateTimeDate();
   setInterval(updateTimeDate, 1000);
