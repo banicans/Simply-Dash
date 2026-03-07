@@ -7,7 +7,7 @@
   --color-text: #e0def4;
   --color-love: #eb6f92;
   --color-gold: #f6c177;
-  --font-primary: "Plaster", system-ui;
+  --font-primary: "Caprasimo", serif;
   --font-secondary: 'Google Sans', sans-serif;
 }
 
@@ -98,6 +98,7 @@ a:hover{
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-width: 45%;
 }
 
 #weather-current {
@@ -127,8 +128,7 @@ a:hover{
   overflow: visible;
 }
 
-
-.weather-current-icon svg{
+.weather-current-icon i{
   color: var(--color-gold);
 }
 
@@ -279,7 +279,7 @@ a:hover{
   transform: translate(-50%, -50%);
   visibility: hidden;
   z-index: 1000;
- 
+  border: 2px solid var(--color-love);
 }
 
 .moodle-settings-visible{
@@ -292,7 +292,7 @@ a:hover{
 .moodle-header{
   color: var(--color-love);
   font-family: var(--font-primary);
-  font-size: 1.5rem;
+  font-size: 2rem;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -337,22 +337,26 @@ a:hover{
   border-radius: 4px;
 }
 
+
+
 .setting-group-divider{
   height: 2px;
   background-color: var(--color-muted);
   color: var(--color-surface);
 }
 
+
+
 .moodle-group-header{
   color: var(--color-love);
-  font-family: var(--font-secondary);
+  font-family: var(--font-primary);
   font-size: 1.5rem;
 }
 
 .moodle-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
   color: var(--color-muted);
 }
 
@@ -394,7 +398,12 @@ a:hover{
   font-family: var(--font-secondary);
 }
 
-
+.moodle-hidden-info {
+  background-color: var(--color-base);
+  margin-left: 10px;
+  padding: 10px;
+  border-radius: 10px;
+}
 
 
 
@@ -445,7 +454,9 @@ a:hover{
   font-size: 1rem;
 }
 
-
+#calendar-get {
+  max-width: fit-content;
+}
 
 
 

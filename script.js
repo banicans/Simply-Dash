@@ -6,11 +6,15 @@ const STORAGE_KEYS = {
   WEATHER_UNITS: 'dashboard_weather_units',
   LOCATION: 'dashboard_location',
   WEATHER_API: 'dashboard_weather_api',
+  WEATHER_FORECAST_DAYS: 'dashboard_weather_forecast_days',
+  WEATHER_REFRESH_AMOUNT: 'dashboard_weather_refresh_amount',
 
   GOOGLE_CLIENT_ID: 'dashboard_google_client_id',
   GOOGLE_CLIENT_SECRET: 'dashboard_google_client_secret',
   GOOGLE_ACCESS_TOKEN: 'dashboard_google_access_token',
-  GOOGLE_REFRESH_TOKEN: 'dashboard_google_refresh_token'
+  GOOGLE_REFRESH_TOKEN: 'dashboard_google_refresh_token',
+  GOOGLE_REFRESH_AMOUNT: 'dashboard_google_refresh_amount',
+  SELECTED_CALENDARS: 'dashboard_selected_calendar_ids'
 };
 
 const WEATHER_ICONS = {
@@ -30,23 +34,10 @@ const WEATHER_ICONS = {
   '11n': 'bi-cloud-lightning-rain-fill',
   '13d': 'bi-cloud-snow-fill',
   '13n': 'bi-cloud-snow-fill',
-  '50d': 'bi-cloud-sleet-fill',
-  '50n': 'bi-cloud-sleet-fill'
+  '50d': 'bi-cloud-fog-fill',
+  '50n': 'bi-cloud-fog-fill'
 };
 
-const WEATHER_SVG = {
-  'bi-brightness-high-fill': '<path d="M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"/>',
-  'bi-moon-stars-fill': '<path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278M4.858 1.311A7.269 7.269 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.316 7.316 0 0 0 5.205-2.162c-.337.042-.68.063-1.029.063-4.61 0-8.343-3.714-8.343-8.29 0-1.167.242-2.278.681-3.286"/>',
-  'bi-cloud-sun-fill': '<path d="M11.473 11a4.5 4.5 0 0 0-8.72-.99A3 3 0 0 0 3 16h8.5a2.5 2.5 0 0 0 0-5z"/><path d="M10.5 1.5a.5.5 0 0 0-1 0v1a.5.5 0 0 0 1 0zm3.743 1.964a.5.5 0 1 0-.707-.707l-.708.707a.5.5 0 0 0 .708.708zm-7.779-.707a.5.5 0 0 0-.707.707l.707.708a.5.5 0 1 0 .708-.708zm1.734 3.374a2 2 0 1 1 3.296 2.198q.3.423.516.898a3 3 0 1 0-4.84-3.225q.529.017 1.028.129m4.484 4.074c.6.215 1.125.59 1.522 1.072a.5.5 0 0 0 .039-.742l-.707-.707a.5.5 0 0 0-.854.377M14.5 6.5a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z"/>',
-  'bi-cloud-moon-fill': '<path d="M11..98 10c--1.22.27-.59-3-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4"/>',
-  'bi-cloud-fill': '<path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383"/>',
-  'bi-clouds-fill': '<path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383"/>',
-  'bi-cloud-rain-fill': '<path d="M4.176 11.032a.5.5 0 0 1 .292.643l-1.5 4a.5.5 0 0 1-.936-.35l1.5-4a.5.5 0 0 1 .644-.293m3 0a.5.5 0 0 1 .292.643l-1.5 4a.5.5 0 0 1-.936-.35l1.5-4a.5.5 0 0 1 .644-.293m3 0a.5.5 0 0 1 .292.643l-1.5 4a.5.5 0 0 1-.936-.35l1.5-4a.5.5 0 0 1 .644-.293m3 0a.5.5 0 0 1 .292.643l-1.5 4a.5.5 0 0 1-.936-.35l1.5-4a.5.5 0 0 1 .644-.293m.229-7.005a5.001 5.001 0 0 0-9.499-1.004A3.5 3.5 0 1 0 3.5 10H13a3 3 0 0 0 .405-5.973"/>',
-  'bi-cloud-rain-heavy-fill': '<path d="M4.176 11.032a.5.5 0 0 1 .292.643l-1.5 4a.5.5 0 0 1-.936-.35l1.5-4a.5.5 0 0 1 .644-.293m3 0a.5.5 0 0 1 .292.643l-1.5 4a.5.5 0 0 1-.936-.35l1.5-4a.5.5 0 0 1 .644-.293m3 0a.5.5 0 0 1 .292.643l-1.5 4a.5.5 0 0 1-.936-.35l1.5-4a.5.5 0 0 1 .644-.293m3 0a.5.5 0 0 1 .292.643l-1.5 4a.5.5 0 0 1-.936-.35l1.5-4a.5.5 0 0 1 .644-.293m.229-7.005a5.001 5.001 0 0 0-9.499-1.004A3.5 3.5 0 1 0 3.5 10H13a3 3 0 0 0 .405-5.973"/>',
-  'bi-cloud-lightning-rain-fill': '<path d="M2.658 11.026a.5.5 0 0 1 .316.632l-.5 1.5a.5.5 0 1 1-.948-.316l.5-1.5a.5.5 0 0 1 .632-.316m9.5 0a.5.5 0 0 1 .316.632l-.5 1.5a.5.5 0 0 1-.948-.316l.5-1.5a.5.5 0 0 1 .632-.316m-7.5 1.5a.5.5 0 0 1 .316.632l-.5 1.5a.5.5 0 1 1-.948-.316l.5-1.5a.5.5 0 0 1 .632-.316m9.5 0a.5.5 0 0 1 .316.632l-.5 1.5a.5.5 0 0 1-.948-.316l.5-1.5a.5.5 0 0 1 .632-.316m-7.105-1.25A.5.5 0 0 1 7.5 11h1a.5.5 0 0 1 .474.658l-.28.842H9.5a.5.5 0 0 1 .39.812l-2 2.5a.5.5 0 0 1-.875-.433L7.36 14H6.5a.5.5 0 0 1-.447-.724zm6.352-7.249a5.001 5.001 0 0 0-9.499-1.004A3.5 3.5 0 1 0 3.5 10H13a3 3 0 0 0 .405-5.973"/>',
-  'bi-cloud-snow-fill': '<path d="M2.625 11.5a.25.25 0 0 1 .25.25v.57l.501-.287a.25.25 0 0 1 .248.434l-.495.283.495.283a.25.25 0 0 1-.248.434l-.501-.286v.569a.25.25 0 1 1-.5 0v-.57l-.501.287a.25.25 0 0 1-.248-.434l.495-.283-.495-.283a.25.25 0 0 1 .248-.434l.501.286v-.569a.25.25 0 0 1 .25-.25m2.75 2a.25.25 0 0 1 .25.25v.57l.5-.287a.25.25 0 0 1 .249.434l-.495.283.495.283a.25.25 0 0 1-.248.434l-.501-.286v.569a.25.25 0 1 1-.5 0v-.57l-.501.287a.25.25 0 0 1-.248-.434l.495-.283-.495-.283a.25.25 0 0 1 .248-.434l.501.286v-.569a.25.25 0 0 1 .25-.25m5.5 0a.25.25 0 0 1 .25.25v.57l.5-.287a.25.25 0 0 1 .249.434l-.495.283.495.283a.25.25 0 0 1-.248.434l-.501-.286v.569a.25.25 0 0 1-.5 0v-.57l-.501.287a.25.25 0 1 1-.248-.434l.495-.283-.495-.283a.25.25 0 0 1 .248-.434l.501.286v-.569a.25.25 0 0 1 .25-.25m-2.75-2a.25.25 0 0 1 .25.25v.57l.5-.287a.25.25 0 0 1 .249.434l-.495.283.495.283a.25.25 0 0 1-.248.434l-.501-.286v.569a.25.25 0 1 1-.5 0v-.57l-.501.287a.25.25 0 0 1-.248-.434l.495-.283-.495-.283a.25.25 0 0 1 .248-.434l.501.286v-.569a.25.25 0 0 1 .25-.25m5.5 0a.25.25 0 0 1 .25.25v.57l.5-.287a.25.25 0 0 1 .249.434l-.495.283.495.283a.25.25 0 0 1-.248.434l-.501-.286v.569a.25.25 0 0 1-.5 0v-.57l-.501.287a.25.25 0 1 1-.248-.434l.495-.283-.495-.283a.25.25 0 0 1 .248-.434l.501.286v-.569a.25.25 0 0 1 .25-.25m-.22-7.223a5.001 5.001 0 0 0-9.499-1.004A3.5 3.5 0 1 0 3.5 10.25H13a3 3 0 0 0 .405-5.973"/>',
-  'bi-cloud-sleet-fill': '<path d="M2.375 13.5a.25.25 0 0 1 .25.25v.57l.501-.287a.25.25 0 0 1 .248.434l-.495.283.495.283a.25.25 0 1 1-.248.434l-.501-.286v.569a.25.25 0 1 1-.5 0v-.57l-.501.287a.25.25 0 1 1-.248-.434l.495-.283-.495-.283a.25.25 0 0 1 .248-.434l.501.286v-.569a.25.25 0 0 1 .25-.25m1.849-2.447a.5.5 0 0 1 .223.67l-.5 1a.5.5 0 0 1-.894-.447l.5-1a.5.5 0 0 1 .67-.223zM6.375 13.5a.25.25 0 0 1 .25.25v.57l.5-.287a.25.25 0 0 1 .249.434l-.495.283.495.283a.25.25 0 1 1-.248.434l-.501-.286v.569a.25.25 0 1 1-.5 0v-.57l-.501.287a.25.25 0 1 1-.248-.434l.495-.283-.495-.283a.25.25 0 1 1 .248-.434l.501.286v-.569a.25.25 0 0 1 .25-.25m1.849-2.447a.5.5 0 0 1 .223.67l-.5 1a.5.5 0 0 1-.894-.447l.5-1a.5.5 0 0 1 .67-.223zm2.151 2.447a.25.25 0 0 1 .25.25v.57l.5-.287a.25.25 0 0 1 .249.434l-.495.283.495.283a.25.25 0 1 1-.248.434l-.501-.286v.569a.25.25 0 0 1-.5 0v-.57l-.501.287a.25.25 0 1 1-.248-.434l.495-.283-.495-.283a.25.25 0 1 1 .248-.434l.501.286v-.569a.25.25 0 0 1 .25-.25m1.849-2.447a.5.5 0 0 1 .223.67l-.5 1a.5.5 0 1 1-.894-.447l.5-1a.5.5 0 0 1 .67-.223zm1.181-7.026a5.001 5.001 0 0 0-9.499-1.004A3.5 3.5 0 1 0 3.5 10H13a3 3 0 0 0 .405-5.973"/>'
-};
 
 const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
 const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
@@ -57,15 +48,21 @@ let settingsOpen = false;
 
 function getSettings() {
   return {
-    weatherUnits: localStorage.getItem(STORAGE_KEYS.WEATHER_UNITS) || 'metric',
+    
     generalTimeFormat: localStorage.getItem(STORAGE_KEYS.GENERAL_TIME_FORMAT) || '24h',
     generalDateFormat: localStorage.getItem(STORAGE_KEYS.GENERAL_DATE_FORMAT) || 'dd, Do MMM',
     generalSettingsButtonHide: localStorage.getItem(STORAGE_KEYS.GENERAL_SETTINGS_BUTTON_HIDE) === 'true',
 
+    weatherUnits: localStorage.getItem(STORAGE_KEYS.WEATHER_UNITS) || 'metric',
     location: localStorage.getItem(STORAGE_KEYS.LOCATION) || 'Worcester',
     weatherApi: localStorage.getItem(STORAGE_KEYS.WEATHER_API) || '',
+    weatherForecastDays: localStorage.getItem(STORAGE_KEYS.WEATHER_FORECAST_DAYS) || '3',
+    weatherRefreshAmount: parseInt(localStorage.getItem(STORAGE_KEYS.WEATHER_REFRESH_AMOUNT)) || 30,
+
     googleClientId: localStorage.getItem(STORAGE_KEYS.GOOGLE_CLIENT_ID) || '',
-    googleClientSecret: localStorage.getItem(STORAGE_KEYS.GOOGLE_CLIENT_SECRET) || ''
+    googleClientSecret: localStorage.getItem(STORAGE_KEYS.GOOGLE_CLIENT_SECRET) || '',
+    googleRefreshAmount: localStorage.getItem(STORAGE_KEYS.GOOGLE_REFRESH_AMOUNT) || '10',
+    selectedCalendars: JSON.parse(localStorage.getItem(STORAGE_KEYS.SELECTED_CALENDARS)) || []
   };
 }
 
@@ -89,13 +86,24 @@ function saveSettings() {
   localStorage.setItem(STORAGE_KEYS.WEATHER_UNITS, document.getElementById('weather-units').value);
   localStorage.setItem(STORAGE_KEYS.LOCATION, document.getElementById('location-input').value);
   localStorage.setItem(STORAGE_KEYS.WEATHER_API, document.getElementById('weather-api-input').value);
+  localStorage.setItem(STORAGE_KEYS.WEATHER_FORECAST_DAYS, document.getElementById('weather-forecast-days').value);
+  localStorage.setItem(STORAGE_KEYS.WEATHER_REFRESH_AMOUNT, document.getElementById('weather-refresh-amount').value);
 
   localStorage.setItem(STORAGE_KEYS.GOOGLE_CLIENT_ID, document.getElementById('google-client-id').value);
   localStorage.setItem(STORAGE_KEYS.GOOGLE_CLIENT_SECRET, document.getElementById('google-client-secret').value);
+  localStorage.setItem(STORAGE_KEYS.GOOGLE_REFRESH_AMOUNT, document.getElementById('google-refresh-amount').value);
+  
+  const selectedIds = [];
+  document.querySelectorAll('#calendar-list input[type="checkbox"]:checked').forEach(cb => {
+    selectedIds.push(cb.value);
+  });
+  localStorage.setItem(STORAGE_KEYS.SELECTED_CALENDARS, JSON.stringify(selectedIds));
   
   closeSettings();
   fetchWeather();
   updateOpenSettingsColor();
+  restartWeatherInterval();
+  restartCalendarInterval();
 }
 
 function loadSettings() {
@@ -107,9 +115,12 @@ function loadSettings() {
   document.getElementById('weather-units').value = settings.weatherUnits;
   document.getElementById('location-input').value = settings.location;
   document.getElementById('weather-api-input').value = settings.weatherApi;
+  document.getElementById('weather-forecast-days').value = settings.weatherForecastDays;
+  document.getElementById('weather-refresh-amount').value = settings.weatherRefreshAmount;
 
   document.getElementById('google-client-id').value = settings.googleClientId;
   document.getElementById('google-client-secret').value = settings.googleClientSecret;
+  document.getElementById('google-refresh-amount').value = settings.googleRefreshAmount;
 }
 
 function clearData() {
@@ -121,6 +132,11 @@ function openSettings() {
   loadSettings();
   document.querySelector('.moodle-settings').classList.add('moodle-settings-visible');
   settingsOpen = true;
+  
+  const accessToken = localStorage.getItem(STORAGE_KEYS.GOOGLE_ACCESS_TOKEN);
+  if (accessToken) {
+    fetchCalendarList();
+  }
 }
 
 function closeSettings() {
@@ -130,14 +146,12 @@ function closeSettings() {
 
 function getWeatherIconSvg(iconCode) {
   const iconClass = WEATHER_ICONS[iconCode] || 'bi-cloud-fill';
-  const path = WEATHER_SVG[iconClass] || WEATHER_SVG['bi-cloud-fill'];
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" fill="currentColor" class="bi ${iconClass}" viewBox="0 0 16 16">${path}</svg>`;
+  return `<i class="bi ${iconClass}" style="font-size: 8rem;"></i>`;
 }
 
 function getSmallWeatherIconSvg(iconCode) {
   const iconClass = WEATHER_ICONS[iconCode] || 'bi-cloud-fill';
-  const path = WEATHER_SVG[iconClass] || WEATHER_SVG['bi-cloud-fill'];
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi ${iconClass}" viewBox="0 0 16 16">${path}</svg>`;
+  return `<i class="bi ${iconClass}" style="font-size: 4rem;"></i>`;
 }
 
 async function fetchWeather() {
@@ -174,7 +188,7 @@ async function fetchWeather() {
         }
       });
 
-      const days = Object.keys(dailyForecasts).slice(1, 4);
+      const days = Object.keys(dailyForecasts).slice(1, parseInt(settings.weatherForecastDays) + 1);
       const forecastContainer = document.getElementById('weather-forecast');
       forecastContainer.innerHTML = '';
 
@@ -329,8 +343,62 @@ async function refreshGoogleToken() {
   } catch (error) {
     console.error('Error refreshing token:', error);
   }
-  
+   
   return false;
+}
+
+async function fetchCalendarList() {
+  const accessToken = localStorage.getItem(STORAGE_KEYS.GOOGLE_ACCESS_TOKEN);
+  if (!accessToken) {
+    alert('Please sign in with Google first');
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `${GOOGLE_CALENDAR_URL}/users/me/calendarList`,
+      {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      }
+    );
+
+    if (response.status === 401) {
+      const refreshed = await refreshGoogleToken();
+      if (refreshed) {
+        await fetchCalendarList();
+        return;
+      } else {
+        showCalendarAuthButton();
+        return;
+      }
+    }
+
+    const data = await response.json();
+    renderCalendarSettings(data.items || []);
+  } catch (error) {
+    console.error('Error fetching calendar list:', error);
+    alert('Failed to fetch calendar list');
+  }
+}
+
+function renderCalendarSettings(calendars) {
+  const container = document.getElementById('calendar-list');
+  const settings = getSettings();
+  const selectedIds = settings.selectedCalendars;
+
+  container.innerHTML = '';
+
+  calendars.forEach(calendar => {
+    const isChecked = selectedIds.length === 0 || selectedIds.includes(calendar.id);
+    
+    const itemHtml = `
+      <div class="calendar-item">
+        <input type="checkbox" name="calendar-${calendar.id}" id="calendar-${calendar.id}" value="${calendar.id}" ${isChecked ? 'checked' : ''}>
+        <label for="calendar-${calendar.id}">${calendar.summary}</label>
+      </div>
+    `;
+    container.innerHTML += itemHtml;
+  });
 }
 
 async function fetchCalendarEvents() {
@@ -338,6 +406,13 @@ async function fetchCalendarEvents() {
   if (!accessToken) {
     showCalendarAuthButton();
     return;
+  }
+
+  const settings = getSettings();
+  let calendarIds = settings.selectedCalendars;
+  
+  if (calendarIds.length === 0) {
+    calendarIds = ['primary'];
   }
 
   const now = new Date();
@@ -348,26 +423,40 @@ async function fetchCalendarEvents() {
   const timeMax = endOfDay.toISOString();
 
   try {
-    const response = await fetch(
-      `${GOOGLE_CALENDAR_URL}/calendars/primary/events?timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true&orderBy=startTime`,
-      {
-        headers: { 'Authorization': `Bearer ${accessToken}` }
-      }
-    );
+    const allEvents = [];
+    
+    for (const calendarId of calendarIds) {
+      const response = await fetch(
+        `${GOOGLE_CALENDAR_URL}/calendars/${encodeURIComponent(calendarId)}/events?timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true&orderBy=startTime`,
+        {
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        }
+      );
 
-    if (response.status === 401) {
-      const refreshed = await refreshGoogleToken();
-      if (refreshed) {
-        await fetchCalendarEvents();
-        return;
-      } else {
-        showCalendarAuthButton();
-        return;
+      if (response.status === 401) {
+        const refreshed = await refreshGoogleToken();
+        if (refreshed) {
+          await fetchCalendarEvents();
+          return;
+        } else {
+          showCalendarAuthButton();
+          return;
+        }
+      }
+
+      const data = await response.json();
+      if (data.items) {
+        allEvents.push(...data.items);
       }
     }
-
-    const data = await response.json();
-    renderCalendarEvents(data.items || []);
+    
+    allEvents.sort((a, b) => {
+      const startA = new Date(a.start.dateTime || a.start.date);
+      const startB = new Date(b.start.dateTime || b.start.date);
+      return startA - startB;
+    });
+    
+    renderCalendarEvents(allEvents);
   } catch (error) {
     console.error('Error fetching calendar:', error);
     showCalendarAuthButton();
@@ -456,6 +545,35 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('close-settings').addEventListener('click', closeSettings);
   document.getElementById('save-settings').addEventListener('click', saveSettings);
   document.getElementById('clear-data').addEventListener('click', clearData);
+  document.getElementById('google-refresh-now').addEventListener('click', () => {
+    const btn = document.getElementById('google-refresh-now');
+    
+    btn.disabled = true;
+    btn.textContent = 'Refreshing...';
+    btn.style.backgroundColor = 'var(--color-base)';
+    
+    fetchCalendarEvents().finally(() => {
+      btn.disabled = false;
+      btn.textContent = 'Synced!';
+      btn.style.backgroundColor = '';
+      
+      setTimeout(() => {
+        btn.textContent = 'Refresh now';
+      }, 2000);
+    });
+  });
+
+  document.getElementById('calendar-get').addEventListener('click', async () => {
+    const btn = document.getElementById('calendar-get');
+    
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+    
+    await fetchCalendarList();
+    
+    btn.disabled = false;
+    btn.style.opacity = '1';
+  });
 
   document.querySelectorAll('.moodle-show-info').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -472,11 +590,45 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(updateTimeDate, 1000);
 
   fetchWeather();
-  setInterval(fetchWeather, 1800000);
+  startWeatherInterval();
 
   fetchCalendarEvents();
-  setInterval(fetchCalendarEvents, 300000);
+  startCalendarInterval();
 });
+
+let weatherIntervalId = null;
+
+function startWeatherInterval() {
+  const settings = getSettings();
+  const intervalMs = settings.weatherRefreshAmount * 60 * 1000;
+  
+  if (weatherIntervalId) {
+    clearInterval(weatherIntervalId);
+  }
+  
+  weatherIntervalId = setInterval(fetchWeather, intervalMs);
+}
+
+function restartWeatherInterval() {
+  startWeatherInterval();
+}
+
+let calendarIntervalId = null;
+
+function startCalendarInterval() {
+  const settings = getSettings();
+  const intervalMs = parseInt(settings.googleRefreshAmount) * 60 * 1000;
+  
+  if (calendarIntervalId) {
+    clearInterval(calendarIntervalId);
+  }
+  
+  calendarIntervalId = setInterval(fetchCalendarEvents, intervalMs);
+}
+
+function restartCalendarInterval() {
+  startCalendarInterval();
+}
 
 if (localStorage.getItem(STORAGE_KEYS.GOOGLE_ACCESS_TOKEN)) {
   fetchCalendarEvents();
