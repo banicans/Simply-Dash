@@ -35,7 +35,7 @@
 
         <div id="weather-current">
           <div id="weather-current-text">
-            <div class="weather-temp" id="weather-temp">-°C</div>
+            <div class="weather-temp" id="weather-temp">-</div>
             <div class="weather-desc" id="weather-desc">---</div>
           </div>
           <div class="weather-current-icon" id="weather-current-icon"></div>
@@ -84,13 +84,6 @@
           <div class="moodle-group-header">
             <i class="bi bi-gear-fill"></i> General Settings
           </div>
-          <div class="moodle-item">
-            <label for="general-units">Temperature Units:</label>
-            <select name="general-units" id="general-units">
-              <option value="metric">Celsius (°C)</option>
-              <option value="imperial">Fahrenheit (°F)</option>
-            </select>
-          </div>
 
           <div class="moodle-item">
             <label for="general-time-format">Time Format:</label>
@@ -127,6 +120,13 @@
         <div class="moodle-group"> <!-- Moodle Group-Weather Start -->
           <div class="moodle-group-header">
             <i class="bi bi-cloud-fill"></i> Weather Settings
+          </div>
+          <div class="moodle-item">
+            <label for="weather-units">Temperature Units:</label>
+            <select name="weather-units" id="weather-units">
+              <option value="metric">Celsius (°C)</option>
+              <option value="imperial">Fahrenheit (°F)</option>
+            </select>
           </div>
           <div class="moodle-item">
             <label for="location-input">Location:</label>

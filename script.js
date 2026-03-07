@@ -1,14 +1,16 @@
 const STORAGE_KEYS = {
+  GENERAL_TIME_FORMAT: 'dashboard_general_time_format',
+  GENERAL_DATE_FORMAT: 'dashboard_general_date_format',
+  GENERAL_SETTINGS_BUTTON_HIDE: 'dashboard_general_settings_button_hide',
+  
+  WEATHER_UNITS: 'dashboard_weather_units',
   LOCATION: 'dashboard_location',
   WEATHER_API: 'dashboard_weather_api',
+
   GOOGLE_CLIENT_ID: 'dashboard_google_client_id',
   GOOGLE_CLIENT_SECRET: 'dashboard_google_client_secret',
   GOOGLE_ACCESS_TOKEN: 'dashboard_google_access_token',
-  GOOGLE_REFRESH_TOKEN: 'dashboard_google_refresh_token',
-  GENERAL_UNITS: 'dashboard_general_units',
-  GENERAL_TIME_FORMAT: 'dashboard_general_time_format',
-  GENERAL_DATE_FORMAT: 'dashboard_general_date_format',
-  GENERAL_SETTINGS_BUTTON_HIDE: 'dashboard_general_settings_button_hide'
+  GOOGLE_REFRESH_TOKEN: 'dashboard_google_refresh_token'
 };
 
 const WEATHER_ICONS = {
@@ -55,7 +57,7 @@ let settingsOpen = false;
 
 function getSettings() {
   return {
-    generalUnits: localStorage.getItem(STORAGE_KEYS.GENERAL_UNITS) || 'metric',
+    weatherUnits: localStorage.getItem(STORAGE_KEYS.WEATHER_UNITS) || 'metric',
     generalTimeFormat: localStorage.getItem(STORAGE_KEYS.GENERAL_TIME_FORMAT) || '24h',
     generalDateFormat: localStorage.getItem(STORAGE_KEYS.GENERAL_DATE_FORMAT) || 'dd, Do MMM',
     generalSettingsButtonHide: localStorage.getItem(STORAGE_KEYS.GENERAL_SETTINGS_BUTTON_HIDE) === 'true',
@@ -80,13 +82,14 @@ function updateOpenSettingsColor() {
 }
 
 function saveSettings() {
-  localStorage.setItem(STORAGE_KEYS.GENERAL_UNITS, document.getElementById('general-units').value);
   localStorage.setItem(STORAGE_KEYS.GENERAL_TIME_FORMAT, document.getElementById('general-time-format').value);
   localStorage.setItem(STORAGE_KEYS.GENERAL_DATE_FORMAT, document.getElementById('general-date-format').value);
   localStorage.setItem(STORAGE_KEYS.GENERAL_SETTINGS_BUTTON_HIDE, document.getElementById('general-settings-button-hide').checked);
 
+  localStorage.setItem(STORAGE_KEYS.WEATHER_UNITS, document.getElementById('weather-units').value);
   localStorage.setItem(STORAGE_KEYS.LOCATION, document.getElementById('location-input').value);
   localStorage.setItem(STORAGE_KEYS.WEATHER_API, document.getElementById('weather-api-input').value);
+
   localStorage.setItem(STORAGE_KEYS.GOOGLE_CLIENT_ID, document.getElementById('google-client-id').value);
   localStorage.setItem(STORAGE_KEYS.GOOGLE_CLIENT_SECRET, document.getElementById('google-client-secret').value);
   
@@ -97,12 +100,14 @@ function saveSettings() {
 
 function loadSettings() {
   const settings = getSettings();
-  document.getElementById('general-units').value = settings.generalUnits;
   document.getElementById('general-time-format').value = settings.generalTimeFormat;
   document.getElementById('general-date-format').value = settings.generalDateFormat;
   document.getElementById('general-settings-button-hide').checked = settings.generalSettingsButtonHide;
+
+  document.getElementById('weather-units').value = settings.weatherUnits;
   document.getElementById('location-input').value = settings.location;
   document.getElementById('weather-api-input').value = settings.weatherApi;
+
   document.getElementById('google-client-id').value = settings.googleClientId;
   document.getElementById('google-client-secret').value = settings.googleClientSecret;
 }
@@ -144,18 +149,18 @@ async function fetchWeather() {
 
   try {
     const currentResponse = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(settings.location)}&appid=${settings.weatherApi}&units=metric`
+      `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(settings.location)}&appid=${settings.weatherApi}&units=${settings.weatherUnits}`
     );
     const currentData = await currentResponse.json();
 
     if (currentData.cod === 200) {
-      document.getElementById('weather-temp').textContent = `${Math.round(currentData.main.temp)}°C`;
+      document.getElementById('weather-temp').textContent = `${Math.round(currentData.main.temp)}${settings.weatherUnits === 'metric' ? '°C' : '°F'}`;
       document.getElementById('weather-desc').textContent = currentData.weather[0].description;
       document.getElementById('weather-current-icon').innerHTML = getWeatherIconSvg(currentData.weather[0].icon);
     }
 
     const forecastResponse = await fetch(
-      `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(settings.location)}&appid=${settings.weatherApi}&units=metric`
+      `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(settings.location)}&appid=${settings.weatherApi}&units=${settings.weatherUnits}`
     );
     const forecastData = await forecastResponse.json();
 
@@ -184,7 +189,7 @@ async function fetchWeather() {
           <div class="forecast-day">
             <div class="forecast-date">${dayName}</div>
             <div class="forecast-icon">${getSmallWeatherIconSvg(icon)}</div>
-            <div class="forecast-temp">${temp}°C</div>
+            <div class="forecast-temp">${temp}${settings.weatherUnits === 'metric' ? '°C' : '°F'}</div>
           </div>
         `;
         forecastContainer.innerHTML += dayHtml;
@@ -201,23 +206,79 @@ async function fetchWeather() {
 
 function updateTimeDate() {
   const now = new Date();
+  const settings = getSettings();
   
-  const hours = now.getHours().toString().padStart(2, '0');
+  let hours = now.getHours();
   const minutes = now.getMinutes().toString().padStart(2, '0');
-  document.getElementById('time').textContent = `${hours}:${minutes}`;
+  let timeStr;
+  
+  if (settings.generalTimeFormat === '12h') {
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    timeStr = `${hours}:${minutes} ${ampm}`;
+  } else {
+    timeStr = `${hours.toString().padStart(2, '0')}:${minutes}`;
+  }
+  
+  document.getElementById('time').textContent = timeStr;
 
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const day = dayNames[now.getDay()];
-  const dateNum = now.getDate();
-  const ordinal = getOrdinal(dateNum);
-  const month = now.toLocaleDateString('en-US', { month: 'short' });
-  document.getElementById('date').textContent = `${day}, ${dateNum}${ordinal} ${month}`;
+  document.getElementById('date').textContent = formatDate(now, settings.generalDateFormat);
 }
 
-function getOrdinal(n) {
-  const s = ['th', 'st', 'nd', 'rd'];
-  const v = n % 100;
-  return s[(v - 20) % 10] || s[v] || s[0];
+function formatDate(date, format) {
+  const dayNamesShort = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+  const dayNamesAbbr = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const dayNamesFull = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const monthNamesFull = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  
+  const dayOfWeek = date.getDay();
+  const dayOfMonth = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+  const quarter = Math.ceil(month / 3);
+  
+  const getOrdinal = (n) => {
+    const s = ['th', 'st', 'nd', 'rd'];
+    const v = n % 100;
+    return s[(v - 20) % 10] || s[v] || s[0];
+  };
+  
+  const dayOfYear = Math.floor((date - new Date(year, 0, 0)) / (1000 * 60 * 60 * 24));
+  const weekOfYear = Math.ceil((dayOfYear + new Date(year, 0, 1).getDay() + 1) / 7);
+  
+  const replacements = {
+    'dddd': dayNamesFull[dayOfWeek],
+    'ddd': dayNamesAbbr[dayOfWeek],
+    'dd': dayNamesShort[dayOfWeek],
+    'd': dayOfWeek,
+    'YYYY': year,
+    'YY': year.toString().slice(-2),
+    'MMMM': monthNamesFull[month - 1],
+    'MMM': monthNamesShort[month - 1],
+    'MM': month.toString().padStart(2, '0'),
+    'M': month,
+    'Qo': quarter + getOrdinal(quarter),
+    'Q': quarter,
+    'DDDD': dayOfYear.toString().padStart(3, '0'),
+    'DDDo': dayOfYear + getOrdinal(dayOfYear),
+    'DDD': dayOfYear,
+    'DD': dayOfMonth.toString().padStart(2, '0'),
+    'Do': dayOfMonth + getOrdinal(dayOfMonth),
+    'D': dayOfMonth,
+    'ww': weekOfYear.toString().padStart(2, '0'),
+    'wo': weekOfYear + getOrdinal(weekOfYear),
+    'w': weekOfYear
+  };
+  
+  let result = format;
+  const tokenRegex = /dddd|ddd|dd|YYYY|YY|MMMM|MMM|MM|M|Qo|Q|DDDD|DDDo|DDD|DD|Do|D|ww|wo|w/gi;
+  result = result.replace(tokenRegex, (match) => {
+    return replacements[match] !== undefined ? replacements[match] : match;
+  });
+   
+  return result;
 }
 
 function startGoogleAuth() {
