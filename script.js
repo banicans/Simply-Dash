@@ -65,6 +65,17 @@ const THEMES = {
     text: '#ebdbb2',
     love: '#fb4934',
     gold: '#fabd2f'
+  },
+  nord: {
+    name: 'Nord',
+    base: '#2e3440',
+    surface: '#3b4252',
+    overlay: '#434c5e',
+    muted: '#4c566a',
+    subtle: '#d8dee9',
+    text: '#eceff4',
+    love: '#bf616a',
+    gold: '#d08770'
   }
 };
 

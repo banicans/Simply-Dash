@@ -243,7 +243,7 @@ a:hover{
 
 .calendar-event-item-location{
   font-size: 1.5rem;
-  color: var(--color-muted);
+  color: var(--color-subtle);
   font-family: var(--font-secondary);
 }
 
@@ -379,13 +379,13 @@ a:hover{
 }
 
 .moodle-item label{
-  color: var(--color-muted);
+  color: var(--color-text);
   font-family: var(--font-secondary);
   font-size: 1.2rem;
 }
 
 .moodle-itme-des {
-  color: var(--color-muted);
+  color: var(--color-subtle);
   font-family: var(--font-secondary);
   font-size: 0.8rem;
   margin: 0px;
@@ -453,7 +453,7 @@ a:hover{
 
 
 .moodle-show-info {
-  color: var(--color-muted);
+  color: var(--color-subtle);
   font-family: var(--font-secondary);
   font-size: 1rem;
   cursor: pointer;
