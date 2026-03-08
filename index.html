@@ -80,143 +80,187 @@
 
       <div class="moodle-content"> <!-- Moodle Content Start -->
 
-        <div class="moodle-group"> <!-- Moodle Group-General Start -->
+        <div class="moodle-group"> <!-- Moodle Group-General Start ----------------------------------------------------------------------------------- -->
           <div class="moodle-group-header">
             <i class="bi bi-gear-fill"></i> General Settings
           </div>
 
-          <div class="moodle-item">
+          <div class="moodle-item"> <!-- Moodle Item Time Format Start -->
             <label for="general-time-format">Time Format:</label>
+            <p class="moodle-itme-des">24hr or 12hr</p>
             <select name="general-time-format" id="general-time-format">
               <option value="24h">24-hour</option>
               <option value="12h">12-hour (AM/PM)</option>
             </select>
-          </div>
+          </div> <!-- Moodle Item Time Format End -->
 
-          <div class="moodle-item">
+
+          <div class="moodle-item"> <!-- Moodle Item Date Format Start -->
             <label for="general-date-format">Date Format:</label>
+            <p class="moodle-itme-des">How the date is displayed</p>
             <input type="text" name="general-date-format" id="general-date-format" placeholder="dd, Do MMM">
-              <div class="moodle-show-info">
-              > Info
-              <div class="moodle-hidden-info" id="info-date-format">
-                <p>(Default: ddd, Do MMM) To work out which date format you want, visit and look and Moment.js format: <a href="https://devhints.io/datetime" target="_blank">Devhints.io</a></p>
-              </div>
-            </div>
-          </div>
 
-          <div class="moodle-item">
+            <div class="moodle-show-info"><i class="bi bi-caret-right-fill"></i>Info</div>
+            <div class="moodle-hidden-info" id="info-date-format">
+              <p>(Default: ddd, Do MMM = 'Sat 7th Mar') To work out which date format you want, visit this site and look at Moment.js format: <a href="https://devhints.io/datetime" target="_blank">Devhints.io</a></p>
+            </div>
+          </div> <!-- Moodle Item Date Format End -->
+          
+
+          <div class="moodle-item"> <!-- Moodle Item Hide Settings Button Start -->
             <div>
               <label for="general-settings-button-hide">Hide Settings button:</label>
               <input type="checkbox" name="general-settings-button-hide" id="general-settings-button-hide" value="True">
+              <p class="moodle-itme-des">Should the settings gear icon always be visable?</p>
             </div>
-            
-          </div>
-        </div><!-- Moodle Group-General End -->
+          </div> <!-- Moodle Item Show Settings Button End -->
+
+          <div class="moodle-item"> <!-- Moodle Item Theme Start -->
+            <label for="general-theme">Theme:</label>
+            <p class="moodle-itme-des">Choose a theme for the dashboard</p>
+            <select name="general-theme" id="general-theme">
+              <option value="rosepine">RosePine</option>
+              <option value="catppuccin">Catppuccin</option>
+              <option value="everforest">Everforest</option>
+              <option value="gruvbox">Gruvbox</option>
+            </select>
+            <div class="moodle-show-info"><i class="bi bi-caret-right-fill"></i>Info</div>
+            <div class="moodle-hidden-info" id="info-theme">
+              <p>Don't see a theme you like... just edit the JS file then.</p>
+            </div>
+          </div> <!-- Moodle Item Theme End -->
+
+        </div><!-- Moodle Group-General End ---------------------------------------------------------------------------------------------------------- -->
 
 
         <div class="setting-group-divider">.</div>
 
 
-        <div class="moodle-group"> <!-- Moodle Group-Weather Start -->
+        <div class="moodle-group"> <!-- Moodle Group-Weather Start ------------------------------------------------------------------------------------ -->
           <div class="moodle-group-header">
             <i class="bi bi-cloud-fill"></i> Weather Settings
           </div>
-          <div class="moodle-item">
+
+          <div class="moodle-item"> <!-- Moodle Item Temp Units Start -->
             <label for="weather-units">Temperature Units:</label>
+            <p class="moodle-itme-des">Celsius (°C) / Fahrenheit (°F)</p>
             <select name="weather-units" id="weather-units">
               <option value="metric">Celsius (°C)</option>
               <option value="imperial">Fahrenheit (°F)</option>
             </select>
-          </div>
-          <div class="moodle-item">
+          </div> <!-- Moodle Item Temp Units End -->
+
+
+          <div class="moodle-item"> <!-- Moodle Item Location Start -->
             <label for="location-input">Location:</label>
+            <p class="moodle-itme-des">Which location to check the weather of</p>
             <input type="text" name="location" id="location-input" placeholder="Worcester">
-          </div>
+          </div> <!-- Moodle Item Location End -->
           
 
-          <div class="moodle-item">
+          <div class="moodle-item"> <!-- Moodle Item Weather API Start -->
             <label for="weather-api-input">Weather API Key (OpenWeatherMap):</label>
+            <p class="moodle-itme-des">Used to access OpenWeatherMap</p>
             <input type="text" name="weather-api-input" id="weather-api-input" placeholder="OpenWeatherMap API Key">
-              <div class="moodle-show-info">
-              > Info
-              <div class="moodle-hidden-info" id="info-open-weather">
-                <p>To get a OpenWeatherMap API key, visit <a href="https://openweathermap.org/api" target="_blank">OpenWeatherMap</a></p>
-              </div>
+
+            <div class="moodle-show-info"><i class="bi bi-caret-right-fill"></i>Info</div>
+            <div class="moodle-hidden-info" id="info-open-weather">
+              <p>To get a OpenWeatherMap API key, visit <a href="https://openweathermap.org/api" target="_blank">OpenWeatherMap</a></p>
             </div>
-          </div>
+          </div> <!-- Moodle Item Weather API End -->
 
 
-          <div class="moodle-item">
-            <label for="weather-refresh-amount">API Request every (minutes):</label>
+          <div class="moodle-item"> <!-- Moodle Item API Requests Start -->
+            <label for="weather-refresh-amount">API Request Timer:</label>
+            <p class="moodle-itme-des">An API request will take place once every X minutes</p>
             <input type="number" name="weather-refresh-amount" id="weather-refresh-amount" placeholder="20" min="1">
-            <div class="moodle-show-info">
-              > Info
-              <div class="moodle-hidden-info" id="info-API-requests">
-                <p>This will make an API request to OpenWeatherMap every X minutes. API requests are limited to your OpenWeatherMap plan. <a href="https://openweathermap.org/full-price" target="_blank">OpenWeatherMap Pricing</a></p>
-              </div>
+
+            <div class="moodle-show-info"><i class="bi bi-caret-right-fill"></i>Info</div>
+            <div class="moodle-hidden-info" id="info-API-requests">
+              <p>This will make an API request to OpenWeatherMap every X minutes. API requests are limited to your OpenWeatherMap plan. <a href="https://openweathermap.org/full-price" target="_blank">OpenWeatherMap Pricing</a></p>
             </div>
-          </div>
+          </div> <!-- Moodle Item API Requests End -->
 
 
-          <div class="moodle-item">
+          <div class="moodle-item"> <!-- Moodle Item Forecast Days Start -->
             <label for="weather-forecast-days">Forecast Days:</label>
+            <p class="moodle-itme-des">How many days ahead to show</p>
             <input type="number" name="weather-forecast-days" id="weather-forecast-days" placeholder="3" min="0">
-              <div class="moodle-show-info">
-              > Info
-              <div class="moodle-hidden-info" id="info-forecast-days">
-                <p>How many days of forecast to display, limited based on your OpenWeatherMap plan. <a href="https://openweathermap.org/full-price" target="_blank">OpenWeatherMap Pricing</a></p>
-              </div>
-            </div>
-          </div>
 
-        </div> <!-- Moodle Group-Weather End -->
+            <div class="moodle-show-info"><i class="bi bi-caret-right-fill"></i>Info</div>
+            <div class="moodle-hidden-info" id="info-forecast-days">
+              <p>How many days of forecast to display, limited based on your OpenWeatherMap plan. <a href="https://openweathermap.org/full-price" target="_blank">OpenWeatherMap Pricing</a></p>
+            </div>
+          </div> <!-- Moodle Item Forecast Days End -->
+
+        </div> <!-- Moodle Group-Weather End ------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
         
 
         <div class="setting-group-divider">.</div>
 
 
-        <div class="moodle-group"> <!-- Moodle Group-Google_Calendar Start -->
+        <div class="moodle-group"> <!-- Moodle Group-Google_Calendar Start ------------------------------------------------------------------------------------------------------------------------------------ -->
           <div class="moodle-group-header">
             <i class="bi bi-calendar-fill"></i> Google Calendar Settings
           </div>
-          <div class="moodle-item">
-            <label for="google-client-id">Google Client ID:</label>
-            <input type="text" name="google_client_id" id="google-client-id" placeholder="Google OAuth Client ID">
-          </div>
 
-          <div class="moodle-item">
+          <div class="moodle-item"> <!-- Moodle Item CalendarID Start -->
+            <label for="google-client-id">Google Client ID:</label>
+            <p class="moodle-itme-des">The Google OAuth Client ID</p>
+            <input type="text" name="google_client_id" id="google-client-id" placeholder="Google OAuth Client ID">
+          </div> <!-- Moodle Item CalendarID End -->
+
+
+          <div class="moodle-item"> <!-- Moodle Item Calendar Secret Start -->
             <label for="google-client-secret">Google Client Secret:</label>
+            <p class="moodle-itme-des">The Google OAuth Client Secret</p>
             <input type="text" name="google_client_secret" id="google-client-secret" placeholder="Google OAuth Client Secret">
-          </div>
-    
-          <div class="moodle-show-info">
-            > Info
-            <div class="moodle-hidden-info" id="info-google_calendar">
+
+            <div class="moodle-show-info"><i class="bi bi-caret-right-fill"></i>Info</div>
+            <div class="moodle-hidden-info" id="info-google-calendar">
               <p>To get Google Calendar API credentials, visit <a href="https://developers.google.com/calendar/api" target="_blank">Google Calendar API</a></p>
             </div>
-          </div>
-
-          <div class="moodle-item">
-            <label for="google-refresh-amount">API Request (minutes):</label>
+          </div><!-- Moodle Item Calendar Secret End -->
+    
+ 
+          <div class="moodle-item"> <!-- Moodle Item Calendar API Requests Start -->
+            <label for="google-refresh-amount">API Request Timer:</label>
+            <p class="moodle-itme-des">An API request will be made once every X minutes</p>
             <input type="number" name="google-refresh_amount" id="google-refresh-amount" placeholder="10">
-          </div>
+          </div> <!-- Moodle Item Calendar API Requests End -->
 
-          <div class="moodle-item">
-            <div>
-              <label for="">Calendars:</label>
-              <button id="calendar-get"><i class="bi bi-arrow-repeat"></i></button>
-            </div>
+          <div class="moodle-item"> <!-- Moodle Item Calendar List Start -->
+            <label for="">Calendars:</label>
+            <p class="moodle-itme-des">Select the calendars to display</p>
+            <button id="calendar-get"><i class="bi bi-arrow-repeat"></i> Get Calendars</button>
             <div id="calendar-list">
               <div class="calendar-item">
                 <input type="checkbox" name="calendar-1" id="calendar-1" value="Calendar 1">
                 <label for="calendar-1">Calendar 1</label>
               </div>
             </div>
+            <div class="moodle-show-info"><i class="bi bi-caret-right-fill"></i>Info</div>
+            <div class="moodle-hidden-info" id="info-google-calendar">
+              <p>To find the icon you want, visit the link, search for an icon and click on it, under 'Icon Font' copy just the 'bi-icon-name' part and paste it in the icon textbox.  <a href="https://icons.getbootstrap.com/" target="_blank">Bootstrap Icons</a></p>
+            </div>
+          </div> <!-- Moodle Item Calendar List End -->
+
+          <div class="moodle-item">
+            <label for="google-events-amount">Max Events:</label>
+            <p class="moodle-itme-des">The maximum number of events to display (Default: 10)</p>
+            <input type="number" name="google-events-amount" id="google-events-amount" placeholder="10" min="1">
+          </div>
+
+          <div class="moodle-item">
+            <label for="google-days-amount">Max days:</label>
+            <p class="moodle-itme-des">The maximum number of days to display containing events (Default: 10)</p>
+            <input type="number" name="google-days-amount" id="google-days-amount" placeholder="10" min="1">
           </div>
 
           <div class="moodle-item">
             <button id="google-refresh-now"><i class="bi bi-arrow-repeat"></i> Refresh now</button>
           </div>
+
         </div> <!-- Moodle Group-Google_Calendar End -->
 
       </div> <!-- Moodle Content End -->
@@ -227,9 +271,11 @@
           <p>Made by Banicans '2026' - <a href="https://github.com/banicans/Simply-Dash">Github</a></p>
         </div>
         <div class="moodle-footer-group">
-          <button id="clear-data"><i class="bi bi-trash-fill"></i> Clear Data</button>
+          <button id="clear-data"><i class="bi bi-arrow-counterclockwise"></i> Reset Data</button>
           <button id="save-settings"><i class="bi bi-floppy-fill"></i> Save</button>
         </div>
+      </div> 
+
     </div> <!-- Moodle Settings End -->
 
   </div><!-- Moodle Overlay End -->

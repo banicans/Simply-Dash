@@ -2,6 +2,7 @@ const STORAGE_KEYS = {
   GENERAL_TIME_FORMAT: 'dashboard_general_time_format',
   GENERAL_DATE_FORMAT: 'dashboard_general_date_format',
   GENERAL_SETTINGS_BUTTON_HIDE: 'dashboard_general_settings_button_hide',
+  GENERAL_THEME: 'dashboard_general_theme',
   
   WEATHER_UNITS: 'dashboard_weather_units',
   LOCATION: 'dashboard_location',
@@ -14,7 +15,57 @@ const STORAGE_KEYS = {
   GOOGLE_ACCESS_TOKEN: 'dashboard_google_access_token',
   GOOGLE_REFRESH_TOKEN: 'dashboard_google_refresh_token',
   GOOGLE_REFRESH_AMOUNT: 'dashboard_google_refresh_amount',
-  SELECTED_CALENDARS: 'dashboard_selected_calendar_ids'
+  GOOGLE_EVENTS_AMOUNT: 'dashboard_google_events_amount',
+  GOOGLE_DAYS_AMOUNT: 'dashboard_google_days_amount',
+  SELECTED_CALENDARS: 'dashboard_selected_calendar_ids',
+  CALENDAR_ICONS: 'dashboard_calendar_icons'
+};
+
+const THEMES = {
+  rosepine: {
+    name: 'RosePine',
+    base: '#191724',
+    surface: '#1f1d2e',
+    overlay: '#26233a',
+    muted: '#6e6a86',
+    subtle: '#908caa',
+    text: '#e0def4',
+    love: '#eb6f92',
+    gold: '#f6c177'
+  },
+  catppuccin: {
+    name: 'Catppuccin',
+    base: '#181825',
+    surface: '#1e1e2e',
+    overlay: '#313244',
+    muted: '#585b70',
+    subtle: '#6c7086',
+    text: '#cdd6f4',
+    love: '#f38ba8',
+    gold: '#f9e2af'
+  },
+  everforest: {
+    name: 'Everforest',
+    base: '#2d3830',
+    surface: '#3d4844',
+    overlay: '#4d5951',
+    muted: '#859289',
+    subtle: '#a3b18a',
+    text: '#d5c4a1',
+    love: '#e67e80',
+    gold: '#fabd2f'
+  },
+  gruvbox: {
+    name: 'Gruvbox',
+    base: '#1d2021',
+    surface: '#282828',
+    overlay: '#3c3836',
+    muted: '#665c54',
+    subtle: '#7c6f64',
+    text: '#ebdbb2',
+    love: '#fb4934',
+    gold: '#fabd2f'
+  }
 };
 
 const WEATHER_ICONS = {
@@ -52,6 +103,7 @@ function getSettings() {
     generalTimeFormat: localStorage.getItem(STORAGE_KEYS.GENERAL_TIME_FORMAT) || '24h',
     generalDateFormat: localStorage.getItem(STORAGE_KEYS.GENERAL_DATE_FORMAT) || 'dd, Do MMM',
     generalSettingsButtonHide: localStorage.getItem(STORAGE_KEYS.GENERAL_SETTINGS_BUTTON_HIDE) === 'true',
+    generalTheme: localStorage.getItem(STORAGE_KEYS.GENERAL_THEME) || 'rosepine',
 
     weatherUnits: localStorage.getItem(STORAGE_KEYS.WEATHER_UNITS) || 'metric',
     location: localStorage.getItem(STORAGE_KEYS.LOCATION) || 'Worcester',
@@ -62,7 +114,10 @@ function getSettings() {
     googleClientId: localStorage.getItem(STORAGE_KEYS.GOOGLE_CLIENT_ID) || '',
     googleClientSecret: localStorage.getItem(STORAGE_KEYS.GOOGLE_CLIENT_SECRET) || '',
     googleRefreshAmount: localStorage.getItem(STORAGE_KEYS.GOOGLE_REFRESH_AMOUNT) || '10',
-    selectedCalendars: JSON.parse(localStorage.getItem(STORAGE_KEYS.SELECTED_CALENDARS)) || []
+    googleEventsAmount: parseInt(localStorage.getItem(STORAGE_KEYS.GOOGLE_EVENTS_AMOUNT)) || 10,
+    googleDaysAmount: parseInt(localStorage.getItem(STORAGE_KEYS.GOOGLE_DAYS_AMOUNT)) || 14,
+    selectedCalendars: JSON.parse(localStorage.getItem(STORAGE_KEYS.SELECTED_CALENDARS)) || [],
+    calendarIcons: JSON.parse(localStorage.getItem(STORAGE_KEYS.CALENDAR_ICONS)) || {}
   };
 }
 
@@ -78,10 +133,25 @@ function updateOpenSettingsColor() {
   }
 }
 
+function applyTheme(themeName) {
+  const theme = THEMES[themeName] || THEMES.rosepine;
+  const root = document.documentElement;
+  
+  root.style.setProperty('--color-base', theme.base);
+  root.style.setProperty('--color-surface', theme.surface);
+  root.style.setProperty('--color-overlay', theme.overlay);
+  root.style.setProperty('--color-muted', theme.muted);
+  root.style.setProperty('--color-subtle', theme.subtle);
+  root.style.setProperty('--color-text', theme.text);
+  root.style.setProperty('--color-love', theme.love);
+  root.style.setProperty('--color-gold', theme.gold);
+}
+
 function saveSettings() {
   localStorage.setItem(STORAGE_KEYS.GENERAL_TIME_FORMAT, document.getElementById('general-time-format').value);
   localStorage.setItem(STORAGE_KEYS.GENERAL_DATE_FORMAT, document.getElementById('general-date-format').value);
   localStorage.setItem(STORAGE_KEYS.GENERAL_SETTINGS_BUTTON_HIDE, document.getElementById('general-settings-button-hide').checked);
+  localStorage.setItem(STORAGE_KEYS.GENERAL_THEME, document.getElementById('general-theme').value);
 
   localStorage.setItem(STORAGE_KEYS.WEATHER_UNITS, document.getElementById('weather-units').value);
   localStorage.setItem(STORAGE_KEYS.LOCATION, document.getElementById('location-input').value);
@@ -92,6 +162,8 @@ function saveSettings() {
   localStorage.setItem(STORAGE_KEYS.GOOGLE_CLIENT_ID, document.getElementById('google-client-id').value);
   localStorage.setItem(STORAGE_KEYS.GOOGLE_CLIENT_SECRET, document.getElementById('google-client-secret').value);
   localStorage.setItem(STORAGE_KEYS.GOOGLE_REFRESH_AMOUNT, document.getElementById('google-refresh-amount').value);
+  localStorage.setItem(STORAGE_KEYS.GOOGLE_EVENTS_AMOUNT, document.getElementById('google-events-amount').value);
+  localStorage.setItem(STORAGE_KEYS.GOOGLE_DAYS_AMOUNT, document.getElementById('google-days-amount').value);
   
   const selectedIds = [];
   document.querySelectorAll('#calendar-list input[type="checkbox"]:checked').forEach(cb => {
@@ -99,11 +171,21 @@ function saveSettings() {
   });
   localStorage.setItem(STORAGE_KEYS.SELECTED_CALENDARS, JSON.stringify(selectedIds));
   
+  const calendarIcons = {};
+  document.querySelectorAll('#calendar-list input[type="text"][id^="calendar-icon-"]').forEach(input => {
+    const calendarId = input.id.replace('calendar-icon-', '');
+    if (input.value) {
+      calendarIcons[calendarId] = input.value;
+    }
+  });
+  localStorage.setItem(STORAGE_KEYS.CALENDAR_ICONS, JSON.stringify(calendarIcons));
+  
   closeSettings();
   fetchWeather();
   updateOpenSettingsColor();
   restartWeatherInterval();
   restartCalendarInterval();
+  applyTheme(document.getElementById('general-theme').value);
 }
 
 function loadSettings() {
@@ -111,6 +193,7 @@ function loadSettings() {
   document.getElementById('general-time-format').value = settings.generalTimeFormat;
   document.getElementById('general-date-format').value = settings.generalDateFormat;
   document.getElementById('general-settings-button-hide').checked = settings.generalSettingsButtonHide;
+  document.getElementById('general-theme').value = settings.generalTheme;
 
   document.getElementById('weather-units').value = settings.weatherUnits;
   document.getElementById('location-input').value = settings.location;
@@ -121,6 +204,8 @@ function loadSettings() {
   document.getElementById('google-client-id').value = settings.googleClientId;
   document.getElementById('google-client-secret').value = settings.googleClientSecret;
   document.getElementById('google-refresh-amount').value = settings.googleRefreshAmount;
+  document.getElementById('google-events-amount').value = settings.googleEventsAmount;
+  document.getElementById('google-days-amount').value = settings.googleDaysAmount;
 }
 
 function clearData() {
@@ -131,6 +216,7 @@ function clearData() {
 function openSettings() {
   loadSettings();
   document.querySelector('.moodle-settings').classList.add('moodle-settings-visible');
+  document.querySelector('.moodle-overlay').classList.add('is-open');
   settingsOpen = true;
   
   const accessToken = localStorage.getItem(STORAGE_KEYS.GOOGLE_ACCESS_TOKEN);
@@ -141,6 +227,7 @@ function openSettings() {
 
 function closeSettings() {
   document.querySelector('.moodle-settings').classList.remove('moodle-settings-visible');
+  document.querySelector('.moodle-overlay').classList.remove('is-open');
   settingsOpen = false;
 }
 
@@ -385,16 +472,24 @@ function renderCalendarSettings(calendars) {
   const container = document.getElementById('calendar-list');
   const settings = getSettings();
   const selectedIds = settings.selectedCalendars;
+  const calendarIcons = settings.calendarIcons;
 
   container.innerHTML = '';
 
   calendars.forEach(calendar => {
     const isChecked = selectedIds.length === 0 || selectedIds.includes(calendar.id);
+    const savedIcon = calendarIcons[calendar.id] || '';
     
     const itemHtml = `
       <div class="calendar-item">
-        <input type="checkbox" name="calendar-${calendar.id}" id="calendar-${calendar.id}" value="${calendar.id}" ${isChecked ? 'checked' : ''}>
-        <label for="calendar-${calendar.id}">${calendar.summary}</label>
+        <div>
+          <input type="checkbox" name="calendar-${calendar.id}" id="calendar-${calendar.id}" value="${calendar.id}" ${isChecked ? 'checked' : ''}>
+          <label for="calendar-${calendar.id}">${calendar.summary}</label>
+        </div>
+        <div class="calendar-icon-container">
+          <label for="calendar-icon-${calendar.id}">Icon:</label>
+          <input type="text" name="calendar-icon-input" id="calendar-icon-${calendar.id}" placeholder="bi-calendar" value="${savedIcon}">
+        </div>
       </div>
     `;
     container.innerHTML += itemHtml;
@@ -417,7 +512,7 @@ async function fetchCalendarEvents() {
 
   const now = new Date();
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 14);
+  const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + settings.googleDaysAmount);
 
   const timeMin = startOfDay.toISOString();
   const timeMax = endOfDay.toISOString();
@@ -446,7 +541,10 @@ async function fetchCalendarEvents() {
 
       const data = await response.json();
       if (data.items) {
-        allEvents.push(...data.items);
+        data.items.forEach(event => {
+          event.calendarId = calendarId;
+          allEvents.push(event);
+        });
       }
     }
     
@@ -456,7 +554,10 @@ async function fetchCalendarEvents() {
       return startA - startB;
     });
     
-    renderCalendarEvents(allEvents);
+    const maxEvents = settings.googleEventsAmount;
+    const eventsToShow = allEvents.slice(0, maxEvents);
+    
+    renderCalendarEvents(eventsToShow);
   } catch (error) {
     console.error('Error fetching calendar:', error);
     showCalendarAuthButton();
@@ -479,6 +580,9 @@ function showCalendarAuthButton() {
 function renderCalendarEvents(events) {
   const calendarCard = document.getElementById('calendar-card');
   calendarCard.innerHTML = '';
+
+  const settings = getSettings();
+  const calendarIcons = settings.calendarIcons;
 
   const eventsByDate = {};
   events.forEach(event => {
@@ -518,11 +622,17 @@ function renderCalendarEvents(events) {
       const time = event.start.dateTime ? start.split('T')[1].substring(0, 5) : 'All day';
       const location = event.location || '';
       
+      const calendarId = event.calendarId;
+      const eventIcon = calendarIcons[calendarId] || 'bi-calendar-fill';
+      
       const eventHtml = `
         <div class="calendar-event-item">
-          <div class="calendar-event-item-time">${time}</div>
-          <div class="calendar-event-item-title">${event.summary || 'No title'}</div>
-          ${location ? `<div class="calendar-event-item-location">${location}</div>` : ''}
+        <i class="bi ${eventIcon} calendar-event-item-icon"></i>
+          <div class="calendar-event-item-details">
+            <div class="calendar-event-item-time">${time}</div>
+            <div class="calendar-event-item-title">${event.summary || 'No title'}</div>
+            ${location ? `<div class="calendar-event-item-location">${location}</div>` : ''}
+          </div>
         </div>
       `;
       eventsContainer.innerHTML += eventHtml;
@@ -577,14 +687,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.moodle-show-info').forEach(btn => {
     btn.addEventListener('click', () => {
-      const hiddenInfo = btn.querySelector('.moodle-hidden-info');
-      if (hiddenInfo) {
-        hiddenInfo.style.display = hiddenInfo.style.display === 'block' ? 'none' : 'block';
+      btn.classList.toggle('active');
+      const hiddenInfo = btn.nextElementSibling;
+      if (hiddenInfo && hiddenInfo.classList.contains('moodle-hidden-info')) {
+        hiddenInfo.classList.toggle('show');
       }
     });
   });
 
   updateOpenSettingsColor();
+  applyTheme(getSettings().generalTheme);
 
   updateTimeDate();
   setInterval(updateTimeDate, 1000);

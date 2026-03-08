@@ -62,7 +62,6 @@ a:hover{
 
 
 
-
 #time-weather-section {
   gap: 20px;
 }
@@ -216,9 +215,18 @@ a:hover{
 }
 
 .calendar-event-item{
+  display: flex;
+  flex-direction: row;
   background-color: var(--color-overlay);
   border-radius: 10px;
   padding: 10px;
+  align-items: center;
+  gap: 10px;
+}
+
+.calendar-event-item-icon {
+  font-size: 2rem;
+  color: var(--color-gold);
 }
 
 .calendar-event-item-time{
@@ -259,7 +267,7 @@ a:hover{
 
 }
 
-.modal-overlay.is-open {
+.moodle-overlay.is-open {
   opacity: 1;
   visibility: visible;
 }
@@ -337,7 +345,11 @@ a:hover{
   border-radius: 4px;
 }
 
-
+#calendar-list{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
 .setting-group-divider{
   height: 2px;
@@ -370,6 +382,13 @@ a:hover{
   color: var(--color-muted);
   font-family: var(--font-secondary);
   font-size: 1.2rem;
+}
+
+.moodle-itme-des {
+  color: var(--color-muted);
+  font-family: var(--font-secondary);
+  font-size: 0.8rem;
+  margin: 0px;
 }
 
 .moodle-item input{
@@ -423,7 +442,7 @@ a:hover{
 }
 
 #save-settings{
-  background-color: var(--color-subtle);
+  background-color: var(--color-overlay);
 }
 #save-settings:hover{
   background-color: var(--color-love);
@@ -445,8 +464,30 @@ a:hover{
   color: var(--color-love);
 }
 
+.moodle-show-info i {
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.moodle-show-info.active i {
+  transform: rotate(90deg);
+}
+
 .moodle-hidden-info {
-  display: none;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  background-color: var(--color-base);
+  margin-left: 10px;
+  padding: 0 10px;
+  border-radius: 10px;
+}
+
+.moodle-hidden-info.show {
+  max-height: 500px;
+  opacity: 1;
+  padding: 10px;
 }
 .moodle-hidden-info p {
   color: var(--color-subtle);
