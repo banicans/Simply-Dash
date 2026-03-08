@@ -7,3 +7,8 @@ Weather uses Openweather.com as the weather provider, you can get your free Open
 
 ## Google Calendar
 Erm it's a little more complicated, I need to write intructions...
+
+## Settings
+### General Settings
+- Time Format:
+Change the time format between 24hr and 12hr (am/pm)
