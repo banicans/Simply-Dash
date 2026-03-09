@@ -1,14 +1,14 @@
 # Simply-Dash
+Simply-Dash is a web-based dashboard used for displaying the Time, Date, Weather and Google Calendar Events.
 
-![Alt Text](path/to/image.png)
+![Screenshot 1](./Images/Image_1.png)
+![Screenshot 2](./Images/Image_2.png)
 
 ## Running
 You can ultimetly use whatever web server you want but I reccomment python.
 - cd ~/dashboard && python3 -m http.server 3000
 
 ## Features
-Simply-Dash is a simple web dashbaord that displays the time, date, weather and Google calendar.
-
 ### Date
 Enter a custom date format to have the date displaying how you want.
 
@@ -72,6 +72,7 @@ Erm it's a little more complicated, I need to write intructions...
 
 ## Maybe one day
 - Change how events are diplayed, maybe use a grid like structure.
-- More customisation for end user
+- More customisation for end user.
 - Tabed based settings moodle.
-- Background behind content
+- Background behind content.
+- Custom CSS Inputs.
