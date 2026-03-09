@@ -1,5 +1,7 @@
 # Simply-Dash
 
+![Alt Text](path/to/image.png)
+
 ## Running
 You can ultimetly use whatever web server you want but I reccomment python.
 - cd ~/dashboard && python3 -m http.server 3000
