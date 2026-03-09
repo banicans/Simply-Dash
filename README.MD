@@ -1,5 +1,9 @@
 # Simply-Dash
 
+## Running
+You can ultimetly use whatever web server you want but I reccomment python.
+- cd ~/dashboard && python3 -m http.server 3000
+
 ## Features
 Simply-Dash is a simple web dashbaord that displays the time, date, weather and Google calendar.
 
@@ -63,3 +67,9 @@ Erm it's a little more complicated, I need to write intructions...
     - The maximum number of days to display which containing events.
 - Refresh now
     - Sync with Google Calendar to get any changes now.
+
+## Maybe one day
+- Change how events are diplayed, maybe use a grid like structure.
+- More customisation for end user
+- Tabed based settings moodle.
+- Background behind content
