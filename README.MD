@@ -89,15 +89,17 @@ To get Google Calendar working you need two things:
 - Client ID
 - Client Secret
 
-#### Step 1 — Set Up a Google Cloud Project
-- Visit [Google Cloud Console](https://console.cloud.google.com/) and log in with your Google account of choice.
-- Create a new project and select it.
+To get these two things you need to:
+- Visit [Google Cloud Console](https://console.cloud.google.com/) and login with your Google account of choise.
+- Create a new project.
+- Select your newly made project
 
-#### Step 2 — Enable Google Calendar API
-- Open the menu (left of 'Google Cloud'):
-    - APIs and Services → Library
-    - Search for **Google Calendar API** and select it.
-    - Click **Enable**.
+Enable Google Calendar
+- Menu (Left of 'Google Cloud):
+    - APIs and services
+        - Libary
+        - Search or scroll down to and select 'Google Calendar API'.
+            - Enable it.
 
 #### Step 3 — Create your OAuth Consent Screen
 - Open the menu:
@@ -132,7 +134,4 @@ To get Google Calendar working you need two things:
 - More customisation options for end users.
 - Tab-based settings modal.
 - Background behind content.
-- Custom CSS inputs.
-
-## Licence
-MIT — feel free to use and modify this project as you like.
+- Custom CSS Inputs.
