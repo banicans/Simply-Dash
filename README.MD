@@ -1,146 +1,138 @@
 # Simply-Dash
-Simply-Dash is a web-based dashboard used for displaying the Time, Date, Weather and Google Calendar Events.
+Simply-Dash is a web-based dashboard for displaying the Time, Date, Weather and Google Calendar Events. It's designed to be lightweight, customisable, and easy to self-host — perfect for a personal home screen or always-on display.
 
 ![Screenshot 1](./Images/Image_1.png)
 ![Screenshot 2](./Images/Image_2.png)
 
+## Prerequisites
+- Python 3 (or any web server of your choice)
+- A modern web browser
+- An OpenWeatherMap account (for weather)
+- A Google Cloud account (for Google Calendar)
+
 ## Running
-You can ultimetly use whatever web server you want but I reccomment python.
-- cd ~/dashboard && python3 -m http.server 3000
+You can ultimately use whatever web server you want, but Python is recommended:
+```
+cd ~/dashboard && python3 -m http.server 3000
+```
 
 ## Features
 ### Date
-Enter a custom date format to have the date displaying how you want.
+Enter a custom date format to have the date display exactly how you want.
 
 ### Weather
-Weather uses Openweather.com as the weather provider, see the section below on how to obatin your own api key.
+Weather uses OpenWeatherMap as the weather provider. See the section below on how to obtain your own API key.
 
 ### Google Calendar
-Display events from your Google Calendar.
+Display upcoming events from your Google Calendar.
 
 ## Settings
 ### General Settings
-- Time Format: (Default: 24hr)
+- **Time Format:** (Default: 24hr)
     - Change the time format between 24hr and 12hr (am/pm).
-- Date Format: (Default: ddd, Do MMM)
-    - Set the dat format to how you want based on date format codes.
-    - Here for codes: [DevHints](https://devhints.io/datetime).
-- Hide the settings button (Default: false)
-    -At the top left of the screen is a gear icon used to acess the settings, toggleing this setting will toggle the visability of the icon.
-- Theme: (Default: RosePine)
-    - Allows you to change between 5 baked in themes, if you don't like one, just edit the js file.
+- **Date Format:** (Default: ddd, Do MMM)
+    - Set the date format based on date format codes.
+    - Reference: [DevHints](https://devhints.io/datetime)
+- **Hide the Settings Button:** (Default: false)
+    - At the top left of the screen is a gear icon used to access the settings. Toggling this setting will toggle the visibility of the icon.
+- **Theme:** (Default: RosePine)
+    - Allows you to change between 5 built-in themes. If you don't like any of them, you can edit the JS file directly.
         - RosePine
-        - Catpuccin
+        - Catppuccin
         - Everforest
-        - Guvbox
+        - Gruvbox
         - Nord
 
 ### Weather Settings
-- Units: (Default: Celsius (°C))
+- **Units:** (Default: Celsius (°C))
     - Switch between Celsius (°C) and Fahrenheit (°F).
-- Location:
-    - Enter the location of where you want to track the weather.
-- Weather API Key:
+- **Location:**
+    - Enter the location where you want to track the weather.
+- **Weather API Key:**
     - Your OpenWeatherMap API key goes here. See the 'Getting API Keys' section.
-- API Request Timer: (Default: 20)
-    - An API request will take place once every X minutes.
+- **API Request Timer:** (Default: 20)
+    - An API request will be made once every X minutes.
     - Note: This is limited based on your OpenWeatherMap API plan. [OpenWeatherMap Pricing](https://openweathermap.org/full-price)
-- Forecast Days: (Default: 3)
+- **Forecast Days:** (Default: 3)
     - How many forecast days to display.
 
 ### Google Calendar Settings
-- Google Client ID:
+- **Google Client ID:**
     - Your OAuth client ID goes here. See the 'Getting API Keys' section.
-- Google Client Secret:
+- **Google Client Secret:**
     - Your OAuth client secret goes here. See the 'Getting API Keys' section.
-- API Request Timer: (Default: 10)
-    - An API request will take place once every X minutes.
-- Calendars:
-    - Get Calendars
-        - Gets the calendars link to your account.
-    - Checkbox
-        - Toggle to show each calendars events or not.
-    - Icon
-        - Display a icon of your choise for each calendar.
-        -To find the icon you want, visit the link, search for an icon and click on it, under 'Icon Font' copy just the 'bi-icon-name' part and paste it in the icon textbox. [BootStrap Icons](https://icons.getbootstrap.com/)
-- Max Events: (Default: 10)
-    - The maximum number of events to be displayed.
-- Maximum Number of Days: (Default: 10)
-    - The maximum number of days to display which containing events.
-- Refresh now
-    - Sync with Google Calendar to get any changes now.
+- **API Request Timer:** (Default: 10)
+    - An API request will be made once every X minutes.
+- **Calendars:**
+    - **Get Calendars** — Fetches the calendars linked to your account.
+    - **Checkbox** — Toggle to show or hide each calendar's events.
+    - **Icon** — Display an icon of your choice for each calendar.
+        - To find an icon, visit the link below, search for one and click on it. Under 'Icon Font', copy just the `bi-icon-name` part and paste it into the icon textbox. [Bootstrap Icons](https://icons.getbootstrap.com/)
+- **Max Events:** (Default: 10)
+    - The maximum number of events to display.
+- **Maximum Number of Days:** (Default: 10)
+    - The maximum number of days ahead to display events for.
+- **Refresh Now**
+    - Sync with Google Calendar immediately to fetch any recent changes.
 
-## Getting API keys
+## Getting API Keys
 ### Weather
-To get an OpenWeatherMap API Key, do the following:
+To get an OpenWeatherMap API key:
 - Go to: [OpenWeatherMap](https://openweathermap.org/)
 - Create an account
-- Select 'your account name' at the top right
+- Select your account name at the top right
     - Select 'My API keys'
-- Copy your API Key to somewhere safe.
+- Copy your API key somewhere safe.
 
 ### Google Calendar
-To get Google Calendar Working you need two things:
+To get Google Calendar working you need two things:
 - Client ID
-- Client Secret 
+- Client Secret
 
-To get these two things you need to:
-- Visit [Google Cloud Console](https://console.cloud.google.com/) and login with your Google account of choise.
-- Create a new project.
-- Select your newly made project
+#### Step 1 — Set Up a Google Cloud Project
+- Visit [Google Cloud Console](https://console.cloud.google.com/) and log in with your Google account of choice.
+- Create a new project and select it.
 
-Enable Google Calendar
-- Menu (Left of 'Google Cloud):
-    - APIs and services
-        - Libary
-        - Search or scroll down to and select 'Google Calendar API'.
-            - Enable it.
+#### Step 2 — Enable Google Calendar API
+- Open the menu (left of 'Google Cloud'):
+    - APIs and Services → Library
+    - Search for **Google Calendar API** and select it.
+    - Click **Enable**.
 
-Creating you OAuth
-- Menu:
-    - APIs and services
-        - OAuth Consent Screen
-            - Get started:
-                - App Info:
-                    - App Name - Can be anything
-                    - User support email - Just enter your own
-                - Audiance:
-                    - External - It's fine to select this
-                - Contact Info:
-                    - Email - Just enter your own again.
-                - Finish
-                    - I agree
-                    - Create
+#### Step 3 — Create your OAuth Consent Screen
+- Open the menu:
+    - APIs and Services → OAuth Consent Screen
+        - Click **Get Started**:
+            - **App Info:** Enter any app name and your support email.
+            - **Audience:** Select **External**.
+            - **Contact Info:** Enter your email again.
+            - Click **Finish**, agree to the terms, then click **Create**.
 
-Creating your Client
-- Menu:
-    - APIs and services
-        - OAuth Consent Screen
-            - Clients:
-                - Create Client.
-                    - Application Type - Web App
-                    - Name - Anything you want
-                    - Authorised JavaScript origins - NOTHING
-                    - Authorised redirect URIs - http://localhost:3000/callback.html
-                    - Create
-                    
-                    - IMPORTANT!!!!!!
-                        - Copy both of the following to somewhere safe:
-                            - Client ID
-                            - Client Secret
-                    - Okay
+#### Step 4 — Create your OAuth Client
+- Open the menu:
+    - APIs and Services → OAuth Consent Screen → Clients
+        - Click **Create Client**:
+            - **Application Type:** Web App
+            - **Name:** Anything you like
+            - **Authorised JavaScript Origins:** Leave blank
+            - **Authorised Redirect URIs:** `http://localhost:3000/callback.html`
+            - Click **Create**
 
-Enabling your account access
-- Menu:
-    - APIs and services
-        - OAuth Consent Screen
-            - Audience
-                - Test Users
-                    - Add - The email of the google calendar you want to access.
+> ⚠️ **Important:** Copy both of the following to somewhere safe before closing this window:
+> - **Client ID**
+> - **Client Secret**
 
-## Maybe one day
-- Change how events are diplayed, maybe use a grid like structure.
-- More customisation for end user.
-- Tabed based settings moodle.
+#### Step 5 — Add your Account as a Test User
+- Open the menu:
+    - APIs and Services → OAuth Consent Screen → Audience → Test Users
+        - Click **Add** and enter the email address of the Google account whose calendar you want to access.
+
+## Roadmap
+- Change how events are displayed — possibly using a grid-based layout.
+- More customisation options for end users.
+- Tab-based settings modal.
 - Background behind content.
-- Custom CSS Inputs.
+- Custom CSS inputs.
+
+## Licence
+MIT — feel free to use and modify this project as you like.
