@@ -81,9 +81,9 @@ const THEMES = {
 
 const WEATHER_ICONS = {
   '01d': 'bi-brightness-high-fill',
-  '01n': 'bi-moon-stars-fill',
+  '01n': 'bi-brightness-high-fill',
   '02d': 'bi-cloud-sun-fill',
-  '02n': 'bi-cloud-moon-fill',
+  '02n': 'bi-cloud-sun-fill',
   '03d': 'bi-cloud-fill',
   '03n': 'bi-cloud-fill',
   '04d': 'bi-clouds-fill',
