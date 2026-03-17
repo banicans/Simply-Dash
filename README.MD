@@ -13,7 +13,7 @@ Simply-Dash is a web-based dashboard for displaying the Time, Date, Weather and 
 ## Running
 You can ultimately use whatever web server you want, but Python is recommended:
 ```
-cd ~/dashboard && python3 -m http.server 3000
+cd ~/Simply-Dash && python3 -m http.server 3000
 ```
 
 ## Features
@@ -127,7 +127,8 @@ To get Google Calendar working you need two things:
     - APIs and Services → OAuth Consent Screen → Audience → Test Users
         - Click **Add** and enter the email address of the Google account whose calendar you want to access.
 
-## Roadmap
+## Maybe one day...
+- Support for other calendars: Icalendar, caldav, etc
 - Change how events are displayed — possibly using a grid-based layout.
 - More customisation options for end users.
 - Tab-based settings modal.
