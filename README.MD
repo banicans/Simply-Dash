@@ -44,6 +44,8 @@ Display upcoming events from your Google Calendar.
         - Everforest
         - Gruvbox
         - Nord
+        - Void
+        - Silk
 
 ### Weather Settings
 - **Units:** (Default: Celsius (°C))
@@ -129,11 +131,17 @@ To get Google Calendar working you need two things:
     - APIs and Services → OAuth Consent Screen → Audience → Test Users
         - Click **Add** and enter the email address of the Google account whose calendar you want to access.
 
+## Changes
+### V1.1
+- Void Theme
+- Silk Theme
+- Tabbed settings
+- Date & Time text align
+
 ## Maybe one day...
 - Support for other calendars: Icalendar, caldav, etc
 - Change how events are displayed — possibly using a grid-based layout.
 - More customisation options for end users.
-- Tab-based settings modal.
 - Background behind content.
 - Custom CSS inputs.
 

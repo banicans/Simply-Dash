@@ -77,6 +77,28 @@ const THEMES = {
     text: '#eceff4',
     love: '#bf616a',
     gold: '#d08770'
+  },
+  void: {
+    name: 'Void',
+    base: '#0c0a0e',
+    surface: '#13101a',
+    overlay: '#1e1a28',
+    muted: '#2c2638',
+    subtle: '#3d3550',
+    text: '#e8ddd0',
+    love: '#c0253e',
+    gold: '#c9922a'
+  },
+  silk: {
+    name: 'Silk',
+    base: '#faf7f5',
+    surface: '#f2ece6',
+    overlay: '#e8e0d6',
+    muted: '#d8ccbf',
+    subtle: '#c4b5a5',
+    text: '#2a2030',
+    love: '#b52240',
+    gold: '#b07d10'
   }
 };
 
