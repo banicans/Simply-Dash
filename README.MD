@@ -33,6 +33,8 @@ Display upcoming events from your Google Calendar.
 - **Date Format:** (Default: ddd, Do MMM)
     - Set the date format based on date format codes.
     - Reference: [DevHints](https://devhints.io/datetime)
+- **Time & Date:** (Default: Center)
+    - Changes how the time and date align
 - **Hide the Settings Button:** (Default: false)
     - At the top left of the screen is a gear icon used to access the settings. Toggling this setting will toggle the visibility of the icon.
 - **Theme:** (Default: RosePine)

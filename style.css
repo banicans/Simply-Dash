@@ -9,6 +9,7 @@
   --color-gold: #f6c177;
   --font-primary: "Caprasimo", serif;
   --font-secondary: 'Google Sans', sans-serif;
+  --time-align: center;
 }
 
 body {
@@ -70,7 +71,7 @@ a:hover{
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: var(--time-align);;
   background-color: var(--color-base);
 }
 #time{
@@ -78,12 +79,14 @@ a:hover{
   font-family: var(--font-primary);
   color: var(--color-love);
   text-shadow: 10px 10px var(--color-overlay);
+  text-align: var(--time-align);
 }
 
 #date{
   font-size: 5rem;
   color: var(--color-muted);
   font-family: var(--font-secondary);
+  text-align: var(--time-align);
 }
 
 
@@ -249,8 +252,9 @@ a:hover{
 
 
 
-
-
+ /* ----------------------------------------------------------------------------------------------------------------------------------------------------------*/
+ /* Moodle ---------------------------------------------------------------------------------------------------------------------------------------------------*/
+ /* ----------------------------------------------------------------------------------------------------------------------------------------------------------*/
 .moodle-overlay{
   position: fixed;
   top: 0;
@@ -276,7 +280,7 @@ a:hover{
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 500px;
+  width: 700px;
   background-color: var(--color-surface);
   padding: 20px;
   border-radius: 20px;
@@ -287,25 +291,22 @@ a:hover{
   visibility: hidden;
   z-index: 1000;
   border: 2px solid var(--color-love);
+  height: 70vh;
 }
 
 .moodle-settings-visible{
   visibility: visible;
 }
 
-
-
-
 .moodle-header{
-  color: var(--color-love);
-  font-family: var(--font-primary);
-  font-size: 2rem;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  color: var(--color-love);
+  font-family: var(--font-primary);
+  font-size: 2rem;
 }
-
 .moodle-close-button{
   background: none;
   border: none;
@@ -318,113 +319,6 @@ a:hover{
   background-color: var(--color-overlay);
 }
 
-
-
-.moodle-content{
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  background-color: var(--color-overlay);
-  border-radius: 20px;
-  padding: 20px;
-  max-height: 60vh;
-  overflow-y: auto; 
-  scrollbar-width: auto;
-  scrollbar-color: var(--color-muted) var(--color-overlay);
-}
-
-.moodle-content::-webkit-scrollbar {
-  width: 8px;
-}
-.moodle-content::-webkit-scrollbar-track {
-  background: var(--color-gold);
-}
-.moodle-content::-webkit-scrollbar-thumb {
-  background: var(--color-muted);
-  border-radius: 4px;
-}
-
-#calendar-list{
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.setting-group-divider{
-  height: 2px;
-  background-color: var(--color-muted);
-  color: var(--color-surface);
-}
-
-
-
-.moodle-group-header{
-  color: var(--color-love);
-  font-family: var(--font-primary);
-  font-size: 1.5rem;
-}
-
-.moodle-group {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  color: var(--color-muted);
-}
-
-.moodle-item {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.moodle-item label{
-  color: var(--color-text);
-  font-family: var(--font-secondary);
-  font-size: 1.2rem;
-}
-
-.moodle-itme-des {
-  color: var(--color-subtle);
-  font-family: var(--font-secondary);
-  font-size: 0.8rem;
-  margin: 0px;
-}
-
-.moodle-item input{
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  background-color: var(--color-surface);
-  color: var(--color-text);
-  outline: none;
-  font-family: var(--font-secondary);
-}
-
-.moodle-item input:focus{
-  background-color: var(--color-overlay);
-  color: var(--color-gold);
-  border: 2px solid var(--color-gold);
-}
-
-.moodle-item select {
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  background-color: var(--color-surface);
-  color: var(--color-text);
-  outline: none;
-  font-family: var(--font-secondary);
-}
-
-.moodle-hidden-info {
-  background-color: var(--color-base);
-  margin-left: 10px;
-  padding: 10px;
-  border-radius: 10px;
-}
-
-
-
 .moodle-footer{
   display: flex;
   gap: 10px;
@@ -433,6 +327,7 @@ a:hover{
   font-size: 0.5rem;
   justify-content: space-between;
   align-items: center;
+  margin-top: auto;
 }
 
 .moodle-footer-group {
@@ -451,7 +346,152 @@ a:hover{
 
 
 
-.moodle-show-info {
+
+
+
+
+
+
+
+
+
+
+
+
+.tab-header-container{
+  display: flex;
+  flex-direction: row;
+  background-color: var(--color-overlay);
+  border-radius: 10px;
+}
+
+.tab-header-container button{
+  background-color: var(--color-overlay);
+  color: var(--color-love);
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  padding: 10px;
+}
+.tab-header-container button:hover{
+  background-color: var(--color-subtle);
+}
+
+.tab-header-container button.active{
+  background-color: var(--color-subtle);
+}
+
+
+
+.tab-container{
+  background-color: var(--color-overlay);
+  display: flex;
+  flex-direction: row;
+  border-radius: 10px;
+  /*max-height: 60vh;*/
+  overflow-y: auto; 
+  scrollbar-width: auto;
+  scrollbar-color: var(--color-muted) var(--color-overlay);
+}
+
+.tab-container::-webkit-scrollbar {
+  width: 8px;
+}
+.tab-container::-webkit-scrollbar-track {
+  background: var(--color-gold);
+}
+.tab-container::-webkit-scrollbar-thumb {
+  background: var(--color-muted);
+  border-radius: 4px;
+}
+
+.tab-content{
+  padding: 10px;
+  display: none;
+
+}
+.tab-item{
+  margin-bottom: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+#calendar-list{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+
+
+
+
+.tab-group-header{
+  color: var(--color-love);
+  font-family: var(--font-primary);
+  font-size: 1.5rem;
+}
+
+.tab-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: var(--color-muted);
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tab-item label{
+  color: var(--color-text);
+  font-family: var(--font-secondary);
+  font-size: 1.2rem;
+}
+
+.tab-item-des {
+  color: var(--color-subtle);
+  font-family: var(--font-secondary);
+  font-size: 0.8rem;
+  margin: 0px;
+}
+
+.tab-item input{
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+  font-family: var(--font-secondary);
+}
+
+.tab-item input:focus{
+  background-color: var(--color-overlay);
+  color: var(--color-gold);
+  border: 2px solid var(--color-gold);
+}
+
+.tab-item select {
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+  font-family: var(--font-secondary);
+}
+
+.tab-show-info {
   color: var(--color-subtle);
   font-family: var(--font-secondary);
   font-size: 1rem;
@@ -459,20 +499,20 @@ a:hover{
   position: relative;
 }
 
-.moodle-show-info:hover {
+.tab-show-info:hover {
   color: var(--color-love);
 }
 
-.moodle-show-info i {
+.tab-show-info i {
   transition: transform 0.3s ease;
   display: inline-block;
 }
 
-.moodle-show-info.active i {
+.tab-show-info.active i {
   transform: rotate(90deg);
 }
 
-.moodle-hidden-info {
+.tab-hidden-info {
   max-height: 0;
   opacity: 0;
   overflow: hidden;
@@ -483,20 +523,39 @@ a:hover{
   border-radius: 10px;
 }
 
-.moodle-hidden-info.show {
+.tab-hidden-info.show {
   max-height: 500px;
   opacity: 1;
   padding: 10px;
 }
-.moodle-hidden-info p {
+.tab-hidden-info p {
   color: var(--color-subtle);
   font-family: var(--font-secondary);
   font-size: 1rem;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #calendar-get {
   max-width: fit-content;
 }
+
+
+
 
 
 

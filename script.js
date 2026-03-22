@@ -3,6 +3,7 @@ const STORAGE_KEYS = {
   GENERAL_DATE_FORMAT: 'dashboard_general_date_format',
   GENERAL_SETTINGS_BUTTON_HIDE: 'dashboard_general_settings_button_hide',
   GENERAL_THEME: 'dashboard_general_theme',
+  GENERAL_TIME_ALIGN: 'dashboard_general_time_align',
   
   WEATHER_UNITS: 'dashboard_weather_units',
   LOCATION: 'dashboard_location',
@@ -115,6 +116,7 @@ function getSettings() {
     generalDateFormat: localStorage.getItem(STORAGE_KEYS.GENERAL_DATE_FORMAT) || 'dd, Do MMM',
     generalSettingsButtonHide: localStorage.getItem(STORAGE_KEYS.GENERAL_SETTINGS_BUTTON_HIDE) === 'true',
     generalTheme: localStorage.getItem(STORAGE_KEYS.GENERAL_THEME) || 'rosepine',
+    generalTimeAlign: localStorage.getItem(STORAGE_KEYS.GENERAL_TIME_ALIGN) || 'center',
 
     weatherUnits: localStorage.getItem(STORAGE_KEYS.WEATHER_UNITS) || 'metric',
     location: localStorage.getItem(STORAGE_KEYS.LOCATION) || 'Worcester',
@@ -158,11 +160,17 @@ function applyTheme(themeName) {
   root.style.setProperty('--color-gold', theme.gold);
 }
 
+function applyTimeAlign() {
+  const settings = getSettings();
+  document.documentElement.style.setProperty('--time-align', settings.generalTimeAlign);
+}
+
 function saveSettings() {
   localStorage.setItem(STORAGE_KEYS.GENERAL_TIME_FORMAT, document.getElementById('general-time-format').value);
   localStorage.setItem(STORAGE_KEYS.GENERAL_DATE_FORMAT, document.getElementById('general-date-format').value);
   localStorage.setItem(STORAGE_KEYS.GENERAL_SETTINGS_BUTTON_HIDE, document.getElementById('general-settings-button-hide').checked);
   localStorage.setItem(STORAGE_KEYS.GENERAL_THEME, document.getElementById('general-theme').value);
+  localStorage.setItem(STORAGE_KEYS.GENERAL_TIME_ALIGN, document.getElementById('general-time-align').value);
 
   localStorage.setItem(STORAGE_KEYS.WEATHER_UNITS, document.getElementById('weather-units').value);
   localStorage.setItem(STORAGE_KEYS.LOCATION, document.getElementById('location-input').value);
@@ -197,6 +205,7 @@ function saveSettings() {
   restartWeatherInterval();
   restartCalendarInterval();
   applyTheme(document.getElementById('general-theme').value);
+  applyTimeAlign();
 }
 
 function loadSettings() {
@@ -205,6 +214,7 @@ function loadSettings() {
   document.getElementById('general-date-format').value = settings.generalDateFormat;
   document.getElementById('general-settings-button-hide').checked = settings.generalSettingsButtonHide;
   document.getElementById('general-theme').value = settings.generalTheme;
+  document.getElementById('general-time-align').value = settings.generalTimeAlign;
 
   document.getElementById('weather-units').value = settings.weatherUnits;
   document.getElementById('location-input').value = settings.location;
@@ -696,11 +706,11 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.style.opacity = '1';
   });
 
-  document.querySelectorAll('.moodle-show-info').forEach(btn => {
+  document.querySelectorAll('.tab-show-info').forEach(btn => {
     btn.addEventListener('click', () => {
       btn.classList.toggle('active');
       const hiddenInfo = btn.nextElementSibling;
-      if (hiddenInfo && hiddenInfo.classList.contains('moodle-hidden-info')) {
+      if (hiddenInfo && hiddenInfo.classList.contains('tab-hidden-info')) {
         hiddenInfo.classList.toggle('show');
       }
     });
@@ -708,6 +718,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   updateOpenSettingsColor();
   applyTheme(getSettings().generalTheme);
+  applyTimeAlign();
 
   updateTimeDate();
   setInterval(updateTimeDate, 1000);
@@ -756,3 +767,20 @@ function restartCalendarInterval() {
 if (localStorage.getItem(STORAGE_KEYS.GOOGLE_ACCESS_TOKEN)) {
   fetchCalendarEvents();
 }
+
+function openSetting(evt, settingName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tab-content");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(settingName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
