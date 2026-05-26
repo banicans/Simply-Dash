@@ -707,58 +707,96 @@ function renderCalendarEvents(events) {
 
   const sortedDates = Object.keys(eventsByDate).sort().slice(0, 7);
 
-  sortedDates.forEach(dateKey => {
-    const date = new Date(dateKey);
-    const dayOfMonth = date.getDate();
-    const dayOfWeek = date.toLocaleDateString('en-UK', { weekday: 'long' });
-
-    const dayHtml = `
-      <div class="calendar-day">
-        <div class="calendar-day-details">
-          <div class="calendar-dayofmonth">${dayOfMonth}</div>
-          <div class="calendar-dayofweek">${dayOfWeek}</div>
-        </div>
-        <div class="calendar-events">
-        </div>
-      </div>
-    `;
-    
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = dayHtml;
-    const dayElement = tempDiv.firstElementChild;
-    const eventsContainer = dayElement.querySelector('.calendar-events');
-
-    eventsByDate[dateKey].forEach(event => {
-      const start = event.start.dateTime || event.start.date;
-      const time = event.start.dateTime ? start.split('T')[1].substring(0, 5) : 'All day';
-      const location = event.location || '';
-      
-      const calendarId = event.calendarId;
-      const eventIcon = calendarIcons[calendarId] || 'bi-calendar-fill';
-      
-      const eventHtml = `
-        <div class="calendar-event-item">
-        <i class="bi ${eventIcon} calendar-event-item-icon"></i>
-          <div class="calendar-event-item-details">
-            <div class="calendar-event-item-time">${time}</div>
-            <div class="calendar-event-item-title">${event.summary || 'No title'}</div>
-            ${location ? `<div class="calendar-event-item-location">${location}</div>` : ''}
-          </div>
-        </div>
-      `;
-      eventsContainer.innerHTML += eventHtml;
-    });
-
-    calendarCard.appendChild(dayElement);
-  });
-
   if (sortedDates.length === 0) {
     calendarCard.innerHTML = `
       <div style="display: flex; align-items: center; justify-content: center; height: 100%; padding: 40px; color: #666;">
         No upcoming events
       </div>
     `;
+    return;
   }
+
+  function buildEventElement(event) {
+    const start = event.start.dateTime || event.start.date;
+    const time = event.start.dateTime ? start.split('T')[1].substring(0, 5) : 'All day';
+    const location = event.location || '';
+    const calendarId = event.calendarId;
+    const eventIcon = calendarIcons[calendarId] || 'bi-calendar-fill';
+
+    const el = document.createElement('div');
+    el.className = 'calendar-event-item';
+    el.innerHTML = `
+      <i class="bi ${eventIcon} calendar-event-item-icon"></i>
+      <div class="calendar-event-item-details">
+        <div class="calendar-event-item-time">${time}</div>
+        <div class="calendar-event-item-title">${event.summary || 'No title'}</div>
+        ${location ? `<div class="calendar-event-item-location">${location}</div>` : ''}
+      </div>
+    `;
+    return el;
+  }
+
+  // Decide each day's span
+  const spans = [];
+  let i = 0;
+  while (i < sortedDates.length) {
+    const dateKey = sortedDates[i];
+    const dayEvents = eventsByDate[dateKey];
+
+    if (dayEvents.length >= 3) {
+      spans.push({ dateKey, span: 2 });
+      i++;
+    } else {
+      const nextDateKey = sortedDates[i + 1];
+      const nextEvents = nextDateKey ? eventsByDate[nextDateKey] : null;
+
+      if (nextEvents && nextEvents.length < 3) {
+        spans.push({ dateKey, span: 1 });
+        spans.push({ dateKey: nextDateKey, span: 1 });
+        i += 2;
+      } else {
+        spans.push({ dateKey, span: 2 });
+        i++;
+      }
+    }
+  }
+
+  const grid = document.createElement('div');
+  grid.className = 'calendar-days-grid';
+
+  spans.forEach(({ dateKey, span }) => {
+    const dayEvents = eventsByDate[dateKey];
+    const date = new Date(dateKey);
+    const dayOfMonth = date.getDate();
+    const dayOfWeek = date.toLocaleDateString('en-UK', { weekday: 'long' });
+
+    const dayDiv = document.createElement('div');
+    dayDiv.className = 'calendar-day' + (span === 2 ? ' calendar-day--span-2' : '');
+
+    const detailsDiv = document.createElement('div');
+    detailsDiv.className = 'calendar-day-details';
+    detailsDiv.innerHTML = `
+      <div class="calendar-dayofmonth">${dayOfMonth}</div>
+      <div class="calendar-dayofweek">${dayOfWeek}</div>
+    `;
+    dayDiv.appendChild(detailsDiv);
+
+    if (span === 2) {
+      const eventsGrid = document.createElement('div');
+      eventsGrid.className = 'calendar-events-grid';
+      dayEvents.forEach(event => eventsGrid.appendChild(buildEventElement(event)));
+      dayDiv.appendChild(eventsGrid);
+    } else {
+      const eventsContainer = document.createElement('div');
+      eventsContainer.className = 'calendar-events';
+      dayEvents.forEach(event => eventsContainer.appendChild(buildEventElement(event)));
+      dayDiv.appendChild(eventsContainer);
+    }
+
+    grid.appendChild(dayDiv);
+  });
+
+  calendarCard.appendChild(grid);
 }
 
 function getAuthLogEntries() {
