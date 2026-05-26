@@ -705,7 +705,7 @@ function renderCalendarEvents(events) {
     eventsByDate[dateKey].push(event);
   });
 
-  const sortedDates = Object.keys(eventsByDate).sort().slice(0, 7);
+  const sortedDates = Object.keys(eventsByDate).sort();
 
   if (sortedDates.length === 0) {
     calendarCard.innerHTML = `
