@@ -54,6 +54,15 @@
 
     const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
     const REDIRECT_URI = 'http://localhost:3000/callback.html';
+    const LOG_KEY = 'dashboard_auth_log';
+    const MAX_LOG_ENTRIES = 100;
+
+    function addAuthLog(message, level = 'info', details = null) {
+      const logs = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
+      logs.push({ timestamp: new Date().toISOString(), level, message, details });
+      if (logs.length > MAX_LOG_ENTRIES) logs.shift();
+      localStorage.setItem(AUTH_LOG_KEY, JSON.stringify(logs));
+    }
 
     async function exchangeCodeForTokens(code) {
       const clientId = localStorage.getItem(STORAGE_KEYS.GOOGLE_CLIENT_ID);
@@ -92,6 +101,7 @@
       const messageEl = document.getElementById('message');
 
       if (error) {
+        addAuthLog('OAuth callback: authorization error returned', 'error', { error });
         messageEl.textContent = 'Authorization failed: ' + error;
         messageEl.className = 'error';
         setTimeout(() => window.close(), 3000);
@@ -99,11 +109,14 @@
       }
 
       if (!code) {
+        addAuthLog('OAuth callback: no authorization code received', 'error');
         messageEl.textContent = 'No authorization code received';
         messageEl.className = 'error';
         setTimeout(() => window.close(), 3000);
         return;
       }
+
+      addAuthLog('OAuth callback: authorization code received, exchanging for tokens', 'info');
 
       try {
         const tokens = await exchangeCodeForTokens(code);
@@ -111,6 +124,9 @@
         localStorage.setItem(STORAGE_KEYS.GOOGLE_ACCESS_TOKEN, tokens.access_token);
         if (tokens.refresh_token) {
           localStorage.setItem(STORAGE_KEYS.GOOGLE_REFRESH_TOKEN, tokens.refresh_token);
+          addAuthLog('OAuth callback: tokens obtained (with refresh token)', 'info');
+        } else {
+          addAuthLog('OAuth callback: tokens obtained (NO refresh token returned!)', 'warn');
         }
 
         messageEl.textContent = 'Successfully authenticated!';
@@ -120,6 +136,7 @@
           window.location.href = 'index.html';
         }, 1500);
       } catch (err) {
+        addAuthLog('OAuth callback: token exchange failed', 'error', { message: err.message });
         messageEl.textContent = err.message;
         messageEl.className = 'error';
         setTimeout(() => window.close(), 5000);

@@ -2,8 +2,10 @@ const STORAGE_KEYS = {
   GENERAL_TIME_FORMAT: 'dashboard_general_time_format',
   GENERAL_DATE_FORMAT: 'dashboard_general_date_format',
   GENERAL_SETTINGS_BUTTON_HIDE: 'dashboard_general_settings_button_hide',
+  GENERAL_SHOW_BLOBS: 'dashboard_general_show_blobs',
   GENERAL_THEME: 'dashboard_general_theme',
   GENERAL_TIME_ALIGN: 'dashboard_general_time_align',
+  GENERAL_ANIMATE_BG: 'dashboard_general_animate_bg',
   
   WEATHER_UNITS: 'dashboard_weather_units',
   LOCATION: 'dashboard_location',
@@ -129,6 +131,16 @@ const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const GOOGLE_CALENDAR_URL = 'https://www.googleapis.com/calendar/v3';
 const REDIRECT_URI = 'http://localhost:3000/callback.html';
 
+const LOG_KEY = 'dashboard_auth_log';
+const MAX_LOG_ENTRIES = 100;
+
+function addAuthLog(message, level = 'info', details = null) {
+  const logs = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
+  logs.push({ timestamp: new Date().toISOString(), level, message, details });
+  if (logs.length > MAX_LOG_ENTRIES) logs.shift();
+  localStorage.setItem(LOG_KEY, JSON.stringify(logs));
+}
+
 let settingsOpen = false;
 
 function getSettings() {
@@ -137,6 +149,8 @@ function getSettings() {
     generalTimeFormat: localStorage.getItem(STORAGE_KEYS.GENERAL_TIME_FORMAT) || '24h',
     generalDateFormat: localStorage.getItem(STORAGE_KEYS.GENERAL_DATE_FORMAT) || 'dd, Do MMM',
     generalSettingsButtonHide: localStorage.getItem(STORAGE_KEYS.GENERAL_SETTINGS_BUTTON_HIDE) === 'true',
+    generalShowBlobs: localStorage.getItem(STORAGE_KEYS.GENERAL_SHOW_BLOBS) !== 'false',
+    generalAnimateBg: localStorage.getItem(STORAGE_KEYS.GENERAL_ANIMATE_BG) !== 'false',
     generalTheme: localStorage.getItem(STORAGE_KEYS.GENERAL_THEME) || 'rosepine',
     generalTimeAlign: localStorage.getItem(STORAGE_KEYS.GENERAL_TIME_ALIGN) || 'center',
 
@@ -187,10 +201,24 @@ function applyTimeAlign() {
   document.documentElement.style.setProperty('--time-align', settings.generalTimeAlign);
 }
 
+function toggleBlobs() {
+  const settings = getSettings();
+  document.querySelectorAll('.blob').forEach(blob => {
+    blob.style.display = settings.generalShowBlobs ? '' : 'none';
+  });
+}
+
+function toggleAnimateBg() {
+  const settings = getSettings();
+  document.body.classList.toggle('animate-bg', settings.generalAnimateBg);
+}
+
 function saveSettings() {
   localStorage.setItem(STORAGE_KEYS.GENERAL_TIME_FORMAT, document.getElementById('general-time-format').value);
   localStorage.setItem(STORAGE_KEYS.GENERAL_DATE_FORMAT, document.getElementById('general-date-format').value);
   localStorage.setItem(STORAGE_KEYS.GENERAL_SETTINGS_BUTTON_HIDE, document.getElementById('general-settings-button-hide').checked);
+  localStorage.setItem(STORAGE_KEYS.GENERAL_SHOW_BLOBS, document.getElementById('general-show-blobs').checked);
+  localStorage.setItem(STORAGE_KEYS.GENERAL_ANIMATE_BG, document.getElementById('general-animate-bg').checked);
   localStorage.setItem(STORAGE_KEYS.GENERAL_THEME, document.getElementById('general-theme').value);
   localStorage.setItem(STORAGE_KEYS.GENERAL_TIME_ALIGN, document.getElementById('general-time-align').value);
 
@@ -228,6 +256,8 @@ function saveSettings() {
   restartCalendarInterval();
   applyTheme(document.getElementById('general-theme').value);
   applyTimeAlign();
+  toggleBlobs();
+  toggleAnimateBg();
 }
 
 function loadSettings() {
@@ -235,6 +265,8 @@ function loadSettings() {
   document.getElementById('general-time-format').value = settings.generalTimeFormat;
   document.getElementById('general-date-format').value = settings.generalDateFormat;
   document.getElementById('general-settings-button-hide').checked = settings.generalSettingsButtonHide;
+  document.getElementById('general-show-blobs').checked = settings.generalShowBlobs;
+  document.getElementById('general-animate-bg').checked = settings.generalAnimateBg;
   document.getElementById('general-theme').value = settings.generalTheme;
   document.getElementById('general-time-align').value = settings.generalTimeAlign;
 
@@ -287,7 +319,10 @@ function getSmallWeatherIconSvg(iconCode) {
 async function fetchWeather() {
   const settings = getSettings();
   if (!settings.weatherApi || !settings.location) {
-    console.log('Weather API key or location not set');
+    addAuthLog('Weather: skipped (no API key or location)', 'warn', {
+      hasApiKey: !!settings.weatherApi,
+      hasLocation: !!settings.location
+    });
     return;
   }
 
@@ -301,6 +336,9 @@ async function fetchWeather() {
       document.getElementById('weather-temp').textContent = `${Math.round(currentData.main.temp)}${settings.weatherUnits === 'metric' ? '°C' : '°F'}`;
       document.getElementById('weather-desc').textContent = currentData.weather[0].description;
       document.getElementById('weather-current-icon').innerHTML = getWeatherIconSvg(currentData.weather[0].icon);
+      addAuthLog('Weather: current data fetched', 'info', { location: settings.location, temp: currentData.main.temp });
+    } else {
+      addAuthLog('Weather: current data fetch returned error', 'warn', { cod: currentData.cod, message: currentData.message });
     }
 
     const forecastResponse = await fetch(
@@ -342,8 +380,13 @@ async function fetchWeather() {
           forecastContainer.innerHTML += '<div class="forecast-line"></div>';
         }
       });
+
+      addAuthLog('Weather: forecast fetched', 'info', { location: settings.location, days: days.length });
+    } else {
+      addAuthLog('Weather: forecast fetch returned error', 'warn', { cod: forecastData.cod, message: forecastData.message });
     }
   } catch (error) {
+    addAuthLog('Weather: fetch failed', 'error', { message: error.message });
     console.error('Error fetching weather:', error);
   }
 }
@@ -441,6 +484,9 @@ function startGoogleAuth() {
   authUrl.searchParams.set('access_type', 'offline');
   authUrl.searchParams.set('prompt', 'consent');
 
+  addAuthLog('Starting Google OAuth sign-in', 'info', {
+    clientIdPrefix: settings.googleClientId.substring(0, 10) + '...'
+  });
   window.location.href = authUrl.toString();
 }
 
@@ -449,6 +495,11 @@ async function refreshGoogleToken() {
   const settings = getSettings();
   
   if (!refreshToken || !settings.googleClientId || !settings.googleClientSecret) {
+    addAuthLog('Token refresh skipped: missing refresh token or client credentials', 'warn', {
+      hasRefreshToken: !!refreshToken,
+      hasClientId: !!settings.googleClientId,
+      hasClientSecret: !!settings.googleClientSecret
+    });
     return false;
   }
 
@@ -468,9 +519,14 @@ async function refreshGoogleToken() {
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem(STORAGE_KEYS.GOOGLE_ACCESS_TOKEN, data.access_token);
+      addAuthLog('Token refreshed successfully', 'info');
       return true;
+    } else {
+      const errorText = await response.text();
+      addAuthLog('Token refresh failed', 'error', { status: response.status, error: errorText });
     }
   } catch (error) {
+    addAuthLog('Token refresh threw exception', 'error', { message: error.message });
     console.error('Error refreshing token:', error);
   }
    
@@ -493,17 +549,21 @@ async function fetchCalendarList() {
     );
 
     if (response.status === 401) {
+      addAuthLog('Calendar list: received 401, attempting token refresh', 'warn');
       const refreshed = await refreshGoogleToken();
       if (refreshed) {
+        addAuthLog('Calendar list: token refreshed, retrying request', 'info');
         await fetchCalendarList();
         return;
       } else {
+        addAuthLog('Calendar list: refresh failed, showing auth button', 'error');
         showCalendarAuthButton();
         return;
       }
     }
 
     const data = await response.json();
+    addAuthLog('Calendar list fetched successfully', 'info', { count: (data.items || []).length });
     renderCalendarSettings(data.items || []);
   } catch (error) {
     console.error('Error fetching calendar list:', error);
@@ -572,11 +632,14 @@ async function fetchCalendarEvents() {
       );
 
       if (response.status === 401) {
+        addAuthLog('Calendar events: received 401, attempting token refresh', 'warn', { calendarId });
         const refreshed = await refreshGoogleToken();
         if (refreshed) {
+          addAuthLog('Calendar events: token refreshed, retrying request', 'info');
           await fetchCalendarEvents();
           return;
         } else {
+          addAuthLog('Calendar events: refresh failed, showing auth button', 'error');
           showCalendarAuthButton();
           return;
         }
@@ -601,6 +664,10 @@ async function fetchCalendarEvents() {
     const eventsToShow = allEvents.slice(0, maxEvents);
     
     renderCalendarEvents(eventsToShow);
+    addAuthLog('Calendar events: synced successfully', 'info', {
+      calendars: calendarIds.length,
+      events: eventsToShow.length
+    });
   } catch (error) {
     console.error('Error fetching calendar:', error);
     showCalendarAuthButton();
@@ -608,6 +675,7 @@ async function fetchCalendarEvents() {
 }
 
 function showCalendarAuthButton() {
+  addAuthLog('Auth button displayed - user must re-authenticate', 'warn');
   const calendarCard = document.getElementById('calendar-card');
   calendarCard.innerHTML = `
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 40px;">
@@ -693,6 +761,73 @@ function renderCalendarEvents(events) {
   }
 }
 
+function getAuthLogEntries() {
+  return JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
+}
+
+function viewAuthLog() {
+  const logs = getAuthLogEntries();
+  const container = document.getElementById('auth-log-container');
+  const count = document.getElementById('auth-log-count');
+
+  count.textContent = logs.length + ' entries';
+
+  if (logs.length === 0) {
+    container.innerHTML = '<div class="auth-log-empty">No log entries yet.</div>';
+    return;
+  }
+
+  container.innerHTML = logs.slice().reverse().map(entry => {
+    const ts = new Date(entry.timestamp);
+    const time = ts.toLocaleString();
+    const levelClass = 'auth-log-' + entry.level;
+    const details = entry.details ? ' ' + JSON.stringify(entry.details) : '';
+    return `<div class="auth-log-entry ${levelClass}"><span class="auth-log-time">${time}</span> ${entry.message}${details}</div>`;
+  }).join('');
+
+  document.getElementById('auth-log-modal').classList.add('auth-log-modal--open');
+}
+
+function closeAuthLog() {
+  document.getElementById('auth-log-modal').classList.remove('auth-log-modal--open');
+}
+
+function copyAuthLog() {
+  const logs = getAuthLogEntries();
+  const text = logs.map(entry => {
+    const ts = new Date(entry.timestamp).toISOString();
+    return `[${ts}] [${entry.level}] ${entry.message}${entry.details ? ' ' + JSON.stringify(entry.details) : ''}`;
+  }).join('\n');
+
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('auth-log-copy');
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = 'Copy Log'; }, 2000);
+  });
+}
+
+function downloadAuthLog() {
+  const logs = getAuthLogEntries();
+  const text = logs.map(entry => {
+    const ts = new Date(entry.timestamp).toISOString();
+    return `[${ts}] [${entry.level}] ${entry.message}${entry.details ? ' ' + JSON.stringify(entry.details) : ''}`;
+  }).join('\n');
+
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'auth-log-' + new Date().toISOString().split('T')[0] + '.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function clearAuthLog() {
+  localStorage.removeItem(LOG_KEY);
+  document.getElementById('auth-log-container').innerHTML = '<div class="auth-log-empty">Log cleared.</div>';
+  document.getElementById('auth-log-count').textContent = '0 entries';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('open-settings').addEventListener('click', openSettings);
   document.getElementById('close-settings').addEventListener('click', closeSettings);
@@ -715,6 +850,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 2000);
     });
   });
+
+  document.getElementById('log-view').addEventListener('click', viewAuthLog);
+  document.getElementById('auth-log-close').addEventListener('click', closeAuthLog);
+  document.getElementById('auth-log-copy').addEventListener('click', copyAuthLog);
+  document.getElementById('auth-log-download').addEventListener('click', downloadAuthLog);
+  document.getElementById('auth-log-clear').addEventListener('click', clearAuthLog);
 
   document.getElementById('calendar-get').addEventListener('click', async () => {
     const btn = document.getElementById('calendar-get');
@@ -741,6 +882,8 @@ document.addEventListener('DOMContentLoaded', () => {
   updateOpenSettingsColor();
   applyTheme(getSettings().generalTheme);
   applyTimeAlign();
+  toggleBlobs();
+  toggleAnimateBg();
 
   updateTimeDate();
   setInterval(updateTimeDate, 1000);

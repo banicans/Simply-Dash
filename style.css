@@ -12,14 +12,88 @@
   --time-align: center;
 }
 
+
+
+/* Animated Gradient Background */
+
+.animate-bg {
+  background: linear-gradient(135deg, var(--color-base), var(--color-surface), var(--color-overlay), var(--color-muted));
+  background-size: 400% 400%;
+  animation: gradient-animation 30s ease normal infinite;
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
 body {
   background: var(--color-base);
   color: var(--color-text);
   max-height: 1920px;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  min-height: 100vh;
+}
+
+
+.blob {
+  position: fixed;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--color-muted);
+  opacity: 0.8;
+  filter: blur(50px);
+}
+
+.blob--tr {
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  top: 10%;
+  right: 10%;
+  animation: floatTR 22s ease-in-out infinite;
+}
+
+.blob--bl {
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  bottom: 10%;
+  left: 8%;
+  animation: floatBL 28s ease-in-out infinite;
+}
+
+@keyframes floatTR {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25%      { transform: translate(-90px, 70px) rotate(5deg); }
+  50%      { transform: translate(-50px, 130px) rotate(10deg); }
+  75%      { transform: translate(50px, 50px) rotate(5deg); }
+}
+
+@keyframes floatBL {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25%      { transform: translate(80px, -70px) rotate(-5deg); }
+  50%      { transform: translate(130px, -110px) rotate(-10deg); }
+  75%      { transform: translate(40px, -40px) rotate(-5deg); }
 }
 
 
 .container {
+  position: relative;
+  z-index: 1;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 20px;
   margin: 0.5rem;
 }
 
@@ -34,6 +108,7 @@ body {
   padding: 20px;
   background-color: var(--color-surface);
   border-radius: 20px;
+  opacity: 80%;
 }
 
 button{
@@ -72,7 +147,6 @@ a:hover{
   flex-direction: column;
   justify-content: center;
   align-items: var(--time-align);;
-  background-color: var(--color-base);
 }
 #time{
   font-size: 8rem;
@@ -261,7 +335,7 @@ a:hover{
   left: 0;
   width: 100%;
   height: 100%;
-
+  z-index: 2;
   /* The Blur Effect */
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(4px);
@@ -310,7 +384,7 @@ a:hover{
 .moodle-close-button{
   background: none;
   border: none;
-  color: var(--color-muted);
+  color: var(--color-text);
   font-size: 1.5rem;
   cursor: pointer;
 }
@@ -363,34 +437,39 @@ a:hover{
   flex-direction: row;
   background-color: var(--color-overlay);
   border-radius: 10px;
+  justify-content: space-evenly;
 }
 
 .tab-header-container button{
+  flex: 1;
   background-color: var(--color-overlay);
-  color: var(--color-love);
+  color: var(--color-text);
   font-family: var(--font-primary);
   font-size: 1rem;
   padding: 10px;
-}
-.tab-header-container button:hover{
-  background-color: var(--color-subtle);
+  
 }
 
 .tab-header-container button.active{
-  background-color: var(--color-subtle);
+  color: var(--color-love);
 }
+.tab-header-container button:hover{
+  background-color: var(--color-love);
+  color: var(--color-text);
+}
+
+
 
 
 
 .tab-container{
   background-color: var(--color-overlay);
-  display: flex;
-  flex-direction: row;
+  display: block;
   border-radius: 10px;
-  /*max-height: 60vh;*/
   overflow-y: auto; 
   scrollbar-width: auto;
   scrollbar-color: var(--color-muted) var(--color-overlay);
+  padding: 10px;
 }
 
 .tab-container::-webkit-scrollbar {
@@ -405,7 +484,6 @@ a:hover{
 }
 
 .tab-content{
-  padding: 10px;
   display: none;
 
 }
@@ -575,4 +653,115 @@ a:hover{
   color: var(--color-love);
   font-size: 1.5rem;
   cursor: pointer;
+}
+
+.auth-log-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+.auth-log-modal--open {
+  display: flex;
+}
+.auth-log-modal-content {
+  background: var(--color-surface);
+  border: 2px solid var(--color-love);
+  border-radius: 20px;
+  padding: 20px;
+  width: 700px;
+  max-width: 90vw;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+.auth-log-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--color-love);
+  font-family: var(--font-primary);
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.auth-log-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-secondary);
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+.auth-log-btn {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--color-overlay);
+  color: var(--color-text);
+  cursor: pointer;
+  font-family: var(--font-secondary);
+}
+.auth-log-btn:hover {
+  background: var(--color-love);
+}
+.auth-log-btn--danger:hover {
+  background: #d32f2f;
+}
+.auth-log-close-btn {
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+.auth-log-close-btn:hover {
+  color: var(--color-love);
+  background: var(--color-overlay);
+}
+.auth-log-container {
+  overflow-y: auto;
+  flex: 1;
+  font-family: monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  background: var(--color-base);
+  border-radius: 10px;
+  padding: 10px;
+}
+.auth-log-entry {
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--color-overlay);
+  word-break: break-all;
+}
+.auth-log-entry:last-child {
+  border-bottom: none;
+}
+.auth-log-time {
+  color: var(--color-muted);
+  margin-right: 8px;
+}
+.auth-log-info {
+  color: var(--color-text);
+}
+.auth-log-warn {
+  color: var(--color-gold);
+}
+.auth-log-error {
+  color: var(--color-love);
+}
+.auth-log-empty {
+  color: var(--color-muted);
+  font-family: var(--font-secondary);
+  text-align: center;
+  padding: 40px;
 }

@@ -10,11 +10,19 @@ Simply-Dash is a web-based dashboard for displaying the Time, Date, Weather and 
 - An OpenWeatherMap account (for weather)
 - A Google Cloud account (for Google Calendar)
 
+## Like what you see
+
+```
+git clone https://github.com/banicans/Simply-Dash.git ~/Simply-Dash
+```
+
 ## Running
-You can ultimately use whatever web server you want, but Python is recommended:
+You can ultimately use whatever web server you want, but Python is recommended.
+There are two ways, the easiest is to make start.sh, executable, then run it or run this command, make sure you cd into the correct directory...
 ```
 cd ~/Simply-Dash && python3 -m http.server 3000
 ```
+
 
 ## Features
 ### Date
@@ -46,6 +54,12 @@ Display upcoming events from your Google Calendar.
         - Nord
         - Void
         - Silk
+- **Show Blobs** (Default: True)
+    - Adds some blobs in the background that move around slightly
+- **Animnate Background** (Default: True)
+    - Annimates the background with a gradient.
+- **View Logs**
+    - Logs weather API and google calendar
 
 ### Weather Settings
 - **Units:** (Default: Celsius (°C))
@@ -132,6 +146,12 @@ To get Google Calendar working you need two things:
         - Click **Add** and enter the email address of the Google account whose calendar you want to access.
 
 ## Changes
+### V1.2
+- Animated Blobs
+- Animated background
+- Log files
+- Some Small UI tweeks and fixes
+
 ### V1.1
 - Void Theme
 - Silk Theme
