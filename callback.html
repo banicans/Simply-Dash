@@ -61,7 +61,7 @@
       const logs = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
       logs.push({ timestamp: new Date().toISOString(), level, message, details });
       if (logs.length > MAX_LOG_ENTRIES) logs.shift();
-      localStorage.setItem(AUTH_LOG_KEY, JSON.stringify(logs));
+      localStorage.setItem(LOG_KEY, JSON.stringify(logs));
     }
 
     async function exchangeCodeForTokens(code) {

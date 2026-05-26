@@ -143,6 +143,7 @@ a:hover{
 
 /* -------------------- Time and date Styles -------------------- */
 #time-date-card{
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -170,10 +171,10 @@ a:hover{
 
 /* -------------------- Weather Current Styles -------------------- */
 #weather-card{
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-width: 45%;
 }
 
 #weather-current {
@@ -252,18 +253,23 @@ a:hover{
 
 /* -------------------- Calendar Styles -------------------- */
 #calendar-card{
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   width: 100%;
+}
+
+.calendar-days-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
 .calendar-day{
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   gap: 10px;
-  margin-bottom: 20px;
+}
+
+.calendar-day--span-2{
+  grid-column: 1 / -1;
 }
 
 .calendar-day-details{
@@ -288,6 +294,16 @@ a:hover{
   display: flex;
   flex-direction: column;
   gap: 5px;
+}
+
+.calendar-events-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.calendar-events-grid > .calendar-event-item:last-child:nth-child(odd){
+  grid-column: 1 / -1;
 }
 
 .calendar-event-item{
