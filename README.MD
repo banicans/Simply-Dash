@@ -146,6 +146,10 @@ To get Google Calendar working you need two things:
         - Click **Add** and enter the email address of the Google account whose calendar you want to access.
 
 ## Changes
+### V1.3
+- Changed how calendar days and events are displayed.
+- UI Tweeks
+
 ### V1.2
 - Animated Blobs
 - Animated background
