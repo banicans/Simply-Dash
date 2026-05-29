@@ -164,9 +164,7 @@ To get Google Calendar working you need two things:
 
 ## Maybe one day...
 - Support for other calendars: Icalendar, caldav, etc
-- Change how events are displayed — possibly using a grid-based layout.
 - More customisation options for end users.
-- Background behind content.
 - Custom CSS inputs.
 
 ## Licence

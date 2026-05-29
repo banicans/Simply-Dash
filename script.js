@@ -170,15 +170,11 @@ function getSettings() {
   };
 }
 
-function updateOpenSettingsColor() {
+function updateSettingsButtonVisibility() {
   const settings = getSettings();
-  const openSettingsSvg = document.querySelector('#open-settings svg');
-  if (openSettingsSvg) {
-    if (settings.generalSettingsButtonHide) {
-      openSettingsSvg.style.color = 'var(--color-base)';
-    } else {
-      openSettingsSvg.style.color = 'var(--color-muted)';
-    }
+  const btn = document.getElementById('open-settings');
+  if (btn) {
+    btn.style.opacity = settings.generalSettingsButtonHide ? '0' : '1';
   }
 }
 
@@ -251,7 +247,7 @@ function saveSettings() {
   
   closeSettings();
   fetchWeather();
-  updateOpenSettingsColor();
+  updateSettingsButtonVisibility();
   restartWeatherInterval();
   restartCalendarInterval();
   applyTheme(document.getElementById('general-theme').value);
@@ -736,42 +732,17 @@ function renderCalendarEvents(events) {
     return el;
   }
 
-  // Decide each day's span
-  const spans = [];
-  let i = 0;
-  while (i < sortedDates.length) {
-    const dateKey = sortedDates[i];
-    const dayEvents = eventsByDate[dateKey];
-
-    if (dayEvents.length >= 3) {
-      spans.push({ dateKey, span: 2 });
-      i++;
-    } else {
-      const nextDateKey = sortedDates[i + 1];
-      const nextEvents = nextDateKey ? eventsByDate[nextDateKey] : null;
-
-      if (nextEvents && nextEvents.length < 3) {
-        spans.push({ dateKey, span: 1 });
-        spans.push({ dateKey: nextDateKey, span: 1 });
-        i += 2;
-      } else {
-        spans.push({ dateKey, span: 2 });
-        i++;
-      }
-    }
-  }
-
   const grid = document.createElement('div');
   grid.className = 'calendar-days-grid';
 
-  spans.forEach(({ dateKey, span }) => {
+  sortedDates.forEach(dateKey => {
     const dayEvents = eventsByDate[dateKey];
     const date = new Date(dateKey);
     const dayOfMonth = date.getDate();
     const dayOfWeek = date.toLocaleDateString('en-UK', { weekday: 'long' });
 
     const dayDiv = document.createElement('div');
-    dayDiv.className = 'calendar-day' + (span === 2 ? ' calendar-day--span-2' : '');
+    dayDiv.className = 'calendar-day card';
 
     const detailsDiv = document.createElement('div');
     detailsDiv.className = 'calendar-day-details';
@@ -781,17 +752,10 @@ function renderCalendarEvents(events) {
     `;
     dayDiv.appendChild(detailsDiv);
 
-    if (span === 2) {
-      const eventsGrid = document.createElement('div');
-      eventsGrid.className = 'calendar-events-grid';
-      dayEvents.forEach(event => eventsGrid.appendChild(buildEventElement(event)));
-      dayDiv.appendChild(eventsGrid);
-    } else {
-      const eventsContainer = document.createElement('div');
-      eventsContainer.className = 'calendar-events';
-      dayEvents.forEach(event => eventsContainer.appendChild(buildEventElement(event)));
-      dayDiv.appendChild(eventsContainer);
-    }
+    const eventsContainer = document.createElement('div');
+    eventsContainer.className = 'calendar-events';
+    dayEvents.forEach(event => eventsContainer.appendChild(buildEventElement(event)));
+    dayDiv.appendChild(eventsContainer);
 
     grid.appendChild(dayDiv);
   });
@@ -917,7 +881,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  updateOpenSettingsColor();
+  updateSettingsButtonVisibility();
   applyTheme(getSettings().generalTheme);
   applyTimeAlign();
   toggleBlobs();

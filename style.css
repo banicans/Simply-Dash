@@ -259,7 +259,7 @@ a:hover{
 .calendar-days-grid{
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 20px;
 }
 
 .calendar-day{
@@ -268,15 +268,11 @@ a:hover{
   gap: 10px;
 }
 
-.calendar-day--span-2{
-  grid-column: 1 / -1;
-}
-
 .calendar-day-details{
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 10px;
+  gap: 20px;
 }
 
 .calendar-dayofmonth{
@@ -296,15 +292,6 @@ a:hover{
   gap: 5px;
 }
 
-.calendar-events-grid{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5px;
-}
-
-.calendar-events-grid > .calendar-event-item:last-child:nth-child(odd){
-  grid-column: 1 / -1;
-}
 
 .calendar-event-item{
   display: flex;
