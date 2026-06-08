@@ -284,6 +284,13 @@ function clearData() {
   location.reload();
 }
 
+function reauthenticateGoogle() {
+  localStorage.removeItem(STORAGE_KEYS.GOOGLE_ACCESS_TOKEN);
+  localStorage.removeItem(STORAGE_KEYS.GOOGLE_REFRESH_TOKEN);
+  addAuthLog('Re-authenticate: cleared tokens, starting fresh OAuth', 'info');
+  startGoogleAuth();
+}
+
 function openSettings() {
   loadSettings();
   document.querySelector('.moodle-settings').classList.add('moodle-settings-visible');
@@ -478,7 +485,10 @@ function startGoogleAuth() {
   authUrl.searchParams.set('response_type', 'code');
   authUrl.searchParams.set('scope', scopes.join(' '));
   authUrl.searchParams.set('access_type', 'offline');
-  authUrl.searchParams.set('prompt', 'consent');
+  // Only force consent on first auth to avoid burning through the 50-refresh-token limit
+  if (!localStorage.getItem(STORAGE_KEYS.GOOGLE_REFRESH_TOKEN)) {
+    authUrl.searchParams.set('prompt', 'consent');
+  }
 
   addAuthLog('Starting Google OAuth sign-in', 'info', {
     clientIdPrefix: settings.googleClientId.substring(0, 10) + '...'
@@ -515,7 +525,12 @@ async function refreshGoogleToken() {
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem(STORAGE_KEYS.GOOGLE_ACCESS_TOKEN, data.access_token);
-      addAuthLog('Token refreshed successfully', 'info');
+      if (data.refresh_token) {
+        localStorage.setItem(STORAGE_KEYS.GOOGLE_REFRESH_TOKEN, data.refresh_token);
+        addAuthLog('Token refreshed successfully (with new refresh token)', 'info');
+      } else {
+        addAuthLog('Token refreshed successfully', 'info');
+      }
       return true;
     } else {
       const errorText = await response.text();
@@ -619,7 +634,8 @@ async function fetchCalendarEvents() {
   try {
     const allEvents = [];
     
-    for (const calendarId of calendarIds) {
+    for (let i = 0; i < calendarIds.length; i++) {
+      const calendarId = calendarIds[i];
       const response = await fetch(
         `${GOOGLE_CALENDAR_URL}/calendars/${encodeURIComponent(calendarId)}/events?timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true&orderBy=startTime`,
         {
@@ -631,9 +647,10 @@ async function fetchCalendarEvents() {
         addAuthLog('Calendar events: received 401, attempting token refresh', 'warn', { calendarId });
         const refreshed = await refreshGoogleToken();
         if (refreshed) {
-          addAuthLog('Calendar events: token refreshed, retrying request', 'info');
-          await fetchCalendarEvents();
-          return;
+          addAuthLog('Calendar events: token refreshed, retrying same calendar', 'info');
+          accessToken = localStorage.getItem(STORAGE_KEYS.GOOGLE_ACCESS_TOKEN);
+          i--;
+          continue;
         } else {
           addAuthLog('Calendar events: refresh failed, showing auth button', 'error');
           showCalendarAuthButton();
@@ -852,6 +869,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 2000);
     });
   });
+
+  document.getElementById('google-reauth').addEventListener('click', reauthenticateGoogle);
 
   document.getElementById('log-view').addEventListener('click', viewAuthLog);
   document.getElementById('auth-log-close').addEventListener('click', closeAuthLog);
